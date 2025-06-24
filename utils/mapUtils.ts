@@ -3,17 +3,17 @@
  * Centralized map style loading and configuration
  */
 
-// Replace with your actual Barikoi API key
 // Re-export useState and useEffect for convenience
+import Constants from 'expo-constants';
 import { useEffect, useState } from 'react';
-const BARIKOI_API_KEY = "NDE2NzpVNzkyTE5UMUoy";
+const BARIKOI_API_KEY = Constants.expoConfig?.extra?.barikoiApiKey || '';
 
 /**
  * Fetches Barikoi map style JSON
  * @param apiKey - Your Barikoi API key (optional, uses default if not provided)
  * @returns Promise<any> - Map style JSON object
  */
-export const fetchBarikoiMapStyle = async (apiKey: string = BARIKOI_API_KEY): Promise<any> => {
+export const fetchBarikoiMapStyle = async (apiKey: string = BARIKOI_API_KEY || ''): Promise<any> => {
     try {
         const response = await fetch(
             `https://map.barikoi.com/styles/osm_barikoi_v2/style.json?key=${apiKey}`

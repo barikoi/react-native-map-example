@@ -45,7 +45,8 @@
       "router": {},
       "eas": {
         "projectId": "abb054c3-e1d1-4639-985f-50423ad8517b"
-      }
+      },
+      "barikoiApiKey": "NDE2NzpVNzkyTE5UMUoy"
     }
   }
 }
