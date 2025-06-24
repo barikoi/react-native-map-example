@@ -2,10 +2,24 @@ import type { Location } from '@maplibre/maplibre-react-native';
 import { Camera, MapView, MarkerView, UserLocation } from '@maplibre/maplibre-react-native';
 import * as ExpoLocation from 'expo-location';
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, Image, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, StyleSheet, Text, View } from 'react-native';
+import { BARIKOI_COLORS, useBarikoiMapStyle } from '../../utils/mapUtils';
+
+// Helper function to convert Expo location to MapLibre location
+const convertLocation = (expoLocation: ExpoLocation.LocationObject): Location => ({
+    coords: {
+        latitude: expoLocation.coords.latitude,
+        longitude: expoLocation.coords.longitude,
+        altitude: expoLocation.coords.altitude ?? undefined,
+        accuracy: expoLocation.coords.accuracy ?? undefined,
+        heading: expoLocation.coords.heading ?? undefined,
+        speed: expoLocation.coords.speed ?? undefined
+    },
+    timestamp: expoLocation.timestamp
+});
 
 export default function CurrentLocationScreen() {
-    const [styleJson, setStyleJson] = useState(null);
+    const { styleJson, loading: mapLoading, error: mapError } = useBarikoiMapStyle();
     const [userLocation, setUserLocation] = useState<Location | null>(null);
     const [hasLocationPermission, setHasLocationPermission] = useState(false);
     const [permissionLoading, setPermissionLoading] = useState(true);
@@ -13,17 +27,6 @@ export default function CurrentLocationScreen() {
     const cameraRef = useRef<any>(null);
 
     useEffect(() => {
-        // Fetch map style
-        fetch("https://map.barikoi.com/styles/osm_barikoi_v2/style.json?key=NDE2NzpVNzkyTE5UMUoy")
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.sprite) {
-                    delete data.sprite;
-                }
-                setStyleJson(data);
-            })
-            .catch((error) => console.error("Error fetching style JSON:", error));
-
         // Request location permission
         requestLocationPermission();
     }, []);
@@ -48,151 +51,115 @@ export default function CurrentLocationScreen() {
 
     const requestLocationPermission = async () => {
         try {
-            setPermissionLoading(true);
-
-            // Check if location services are enabled
-            const serviceEnabled = await ExpoLocation.hasServicesEnabledAsync();
-            if (!serviceEnabled) {
-                Alert.alert(
-                    'Location Services Disabled',
-                    'Please enable location services in your device settings to view your current location.',
-                    [{ text: 'OK' }]
-                );
-                setPermissionLoading(false);
-                return;
-            }
-
-            // Request permission
             const { status } = await ExpoLocation.requestForegroundPermissionsAsync();
-
             if (status === 'granted') {
                 setHasLocationPermission(true);
-                console.log('Location permission granted');
+                const location = await ExpoLocation.getCurrentPositionAsync({});
+                setUserLocation(convertLocation(location));
             } else {
                 Alert.alert(
-                    'Location Permission Required',
-                    'This app needs location permission to show your current position on the map.',
-                    [
-                        { text: 'Cancel', style: 'cancel' },
-                        {
-                            text: 'Settings',
-                            onPress: () => {
-                                // You can use Linking.openSettings() here if needed
-                                console.log('Open settings requested');
-                            }
-                        }
-                    ]
+                    'Permission Denied',
+                    'Location permission is required for this feature.',
+                    [{ text: 'OK' }]
                 );
             }
-        } catch (error) {
-            console.error('Error requesting location permission:', error);
-            Alert.alert('Error', 'Failed to request location permission');
+        } catch (err) {
+            console.error('Error requesting location permission:', err);
+            Alert.alert(
+                'Error',
+                'Failed to request location permission.',
+                [{ text: 'OK' }]
+            );
         } finally {
             setPermissionLoading(false);
         }
     };
 
     const handleLocationUpdate = (location: Location) => {
-        console.log("User location updated:", location);
         setUserLocation(location);
     };
 
     const handleLocationPress = () => {
-        if (userLocation && userLocation.coords) {
+        if (userLocation) {
+            const { latitude, longitude } = userLocation.coords;
             Alert.alert(
-                "Current Location",
-                `Latitude: ${userLocation.coords.latitude.toFixed(6)}\nLongitude: ${userLocation.coords.longitude.toFixed(6)}`,
-                [{ text: "OK" }]
+                'Current Location',
+                `Latitude: ${latitude}\nLongitude: ${longitude}`,
+                [{ text: 'OK' }]
             );
         }
     };
 
-    const handleMarkerPress = () => {
-        Alert.alert(
-            "Your Location Marker",
-            userLocation ?
-                `You are here!\nLat: ${userLocation.coords.latitude.toFixed(6)}\nLng: ${userLocation.coords.longitude.toFixed(6)}` :
-                "Location not available",
-            [{ text: "OK" }]
-        );
-    };
-
-    if (permissionLoading) {
+    // Show loading state while map style or permissions are loading
+    if (mapLoading || permissionLoading) {
         return (
-            <View style={styles.loading}>
-                <Text style={styles.loadingText}>Requesting Location Permission...</Text>
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color={BARIKOI_COLORS.primary} />
+                <Text style={styles.loadingText}>
+                    {permissionLoading ? 'Requesting Location Permission...' : 'Loading Map...'}
+                </Text>
+            </View>
+        );
+    }
+
+    // Show error state if map style failed to load
+    if (mapError) {
+        return (
+            <View style={styles.errorContainer}>
+                <Text style={styles.errorTitle}>Error Loading Map</Text>
+                <Text style={styles.errorText}>{mapError}</Text>
             </View>
         );
     }
 
     return (
         <View style={styles.container}>
-            {styleJson ? (
-                <MapView
-                    style={styles.map}
-                    attributionEnabled={false}
-                    logoEnabled
-                    zoomEnabled
-                    mapStyle={styleJson}
-                >
-                    <Camera
-                        ref={cameraRef}
-                        centerCoordinate={[90.364159, 23.823724]} // Default center (Dhaka)
-                        zoomLevel={10}
-                        animationDuration={1000}
-                        animationMode="flyTo"
+            <MapView
+                style={styles.map}
+                attributionEnabled={false}
+                logoEnabled
+                zoomEnabled
+                mapStyle={styleJson}
+            >
+                <Camera
+                    ref={cameraRef}
+                    centerCoordinate={[90.364159, 23.823724]} // Default center (Dhaka)
+                    zoomLevel={10}
+                    animationDuration={1000}
+                    animationMode="flyTo"
+                />
+
+                {hasLocationPermission && (
+                    <UserLocation
+                        visible={true}
+                        animated={true}
+                        renderMode="normal"
+                        showsUserHeadingIndicator={true}
+                        minDisplacement={10}
+                        onUpdate={handleLocationUpdate}
+                        onPress={handleLocationPress}
                     />
+                )}
 
-                    {hasLocationPermission && (
-                        <UserLocation
-                            visible={true}
-                            animated={true}
-                            renderMode="normal"
-                            showsUserHeadingIndicator={true}
-                            minDisplacement={10}
-                            onUpdate={handleLocationUpdate}
-                            onPress={handleLocationPress}
-                        />
-                    )}
-
-                    {/* Custom marker at user location */}
-                    {userLocation && (
-                        <MarkerView
-                            coordinate={[
-                                userLocation.coords.longitude,
-                                userLocation.coords.latitude
-                            ]}
-                            anchor={{ x: 0.5, y: 1.0 }}
-                        >
-                           <View style={styles.markerContainer}>
-                                <Image 
-                                    source={require('../../assets/icons/barikoi_icon.png')} 
-                                    style={styles.markerIcon} 
-                                    resizeMode="contain"
-                                />
-                            </View>
-                        </MarkerView>
-                    )}
-                </MapView>
-            ) : (
-                <View style={styles.loading}>
-                    <Text style={styles.loadingText}>Loading Map...</Text>
-                </View>
-            )}
-
-            {!hasLocationPermission && !permissionLoading && (
-                <View style={styles.permissionBanner}>
-                    <Text style={styles.permissionText}>
-                        Location permission required to show your position
-                    </Text>
-                    <Text
-                        style={styles.retryText}
-                        onPress={requestLocationPermission}
+                {/* Custom marker at user location */}
+                {userLocation && (
+                    <MarkerView
+                        coordinate={[
+                            userLocation.coords.longitude,
+                            userLocation.coords.latitude
+                        ]}
+                        anchor={{ x: 0.5, y: 1.0 }}
                     >
-                        Tap to retry
-                    </Text>
-                </View>
-            )}
+                        <View style={styles.markerContainer}>
+                            <Image
+                                source={require('../../assets/icons/barikoi_icon.png')}
+                                style={styles.markerIcon}
+                                resizeMode="contain"
+                            />
+                        </View>
+                    </MarkerView>
+                )}
+            </MapView>
         </View>
     );
 }
@@ -203,47 +170,39 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     map: {
-        width: "100%",
-        height: "100%",
+        flex: 1,
     },
-    loading: {
+    loadingContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: BARIKOI_COLORS.background,
     },
     loadingText: {
+        marginTop: 16,
         fontSize: 16,
-        color: '#2e8555',
+        color: BARIKOI_COLORS.primary,
         fontWeight: '500',
     },
-    permissionBanner: {
-        position: 'absolute',
-        top: 50,
-        left: 20,
-        right: 20,
-        backgroundColor: 'rgba(255, 193, 7, 0.95)',
-        padding: 15,
-        borderRadius: 10,
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: BARIKOI_COLORS.background,
+        padding: 20,
     },
-    permissionText: {
-        fontSize: 14,
-        color: '#333',
+    errorTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: BARIKOI_COLORS.secondary,
+        marginBottom: 8,
+    },
+    errorText: {
+        fontSize: 16,
+        color: BARIKOI_COLORS.text,
         textAlign: 'center',
-        marginBottom: 5,
-    },
-    retryText: {
-        fontSize: 14,
-        color: '#007AFF',
-        fontWeight: '600',
-        textDecorationLine: 'underline',
     },
     markerContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    iconContainer: {
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -251,12 +210,4 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
     },
-    markerPin: {
-        width: 8,
-        height: 8,
-        backgroundColor: '#2e8555',
-        borderRadius: 4,
-        position: 'absolute',
-        bottom: -4,
-    }
 }); 

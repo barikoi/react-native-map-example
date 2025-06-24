@@ -1,71 +1,69 @@
 import { Camera, MapView, MarkerView } from "@maplibre/maplibre-react-native";
-import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
+import {
+    BARIKOI_COLORS,
+    DEFAULT_CAMERA_SETTINGS,
+    MAP_STYLES,
+    useBarikoiMapStyle
+} from '../../utils/mapUtils';
 
 export default function SimpleMapScreen() {
-    const [styleJson, setStyleJson] = useState(null);
+    // Use the custom hook for better error handling and loading states
+    const { styleJson, loading, error } = useBarikoiMapStyle();
 
-    useEffect(() => {
-        fetch("https://map.barikoi.com/styles/osm_barikoi_v2/style.json?key=NDE2NzpVNzkyTE5UMUoy")
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.sprite) {
-                    delete data.sprite;
-                }
-                setStyleJson(data);
-            })
-            .catch((error) => console.error("Error fetching style JSON:", error));
-    }, []);
+    // Loading state
+    if (loading) {
+        return (
+            <View style={styles.loading}>
+                <ActivityIndicator size="large" color={BARIKOI_COLORS.primary} />
+                <Text style={styles.loadingText}>Loading Barikoi Map...</Text>
+            </View>
+        );
+    }
+
+    // Error state
+    if (error) {
+        return (
+            <View style={styles.error}>
+                <Text style={styles.errorTitle}>Map Loading Error</Text>
+                <Text style={styles.errorText}>{error}</Text>
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>
-            {styleJson ? (
-                <MapView
-                    style={styles.map}
-                    attributionEnabled={false}
-                    logoEnabled
-                    zoomEnabled
-                    mapStyle={styleJson}
+            <MapView
+                style={styles.map}
+                attributionEnabled={false}
+                logoEnabled
+                zoomEnabled
+                mapStyle={styleJson}
+                
+            >
+                <Camera
+                    centerCoordinate={DEFAULT_CAMERA_SETTINGS.centerCoordinate}
+                    zoomLevel={DEFAULT_CAMERA_SETTINGS.zoomLevel}
+                    animationDuration={DEFAULT_CAMERA_SETTINGS.animationDuration}
+                    animationMode={DEFAULT_CAMERA_SETTINGS.animationMode}
+                />
+                <MarkerView
+                    coordinate={DEFAULT_CAMERA_SETTINGS.centerCoordinate}
+                    anchor={MAP_STYLES.marker.anchorDefault}
                 >
-                    <Camera
-                        centerCoordinate={[90.364159, 23.823724]}
-                        zoomLevel={16}
-                        animationDuration={1000}
-                        animationMode="linearTo"
-                    />
-                    {/* <MarkerView
-                        coordinate={[90.364159, 23.823724]}
-                        anchor={{ x: 0.5, y: 1.0 }}
-                    >
-                        <View style={styles.markerContainer}>
-                            <View style={styles.iconContainer}>
-                                <Image
-                                    source={require('../../assets/icons/barikoi_icon.png')}
-                                    style={styles.markerIcon}
-                                    resizeMode="contain"
-                                />
-                                <View style={styles.markerPin} />
-                            </View>
-                        </View>
-                    </MarkerView> */}
-                    <MarkerView
-                            coordinate={[90.364159, 23.823724]}
-                            anchor={{ x: 0.5, y: 1.0 }} // This makes the bottom of the marker be at the coordinate
-                        >
-                            <View style={styles.markerContainer}>
-                                <Image 
-                                    source={require('../../assets/icons/barikoi_icon.png')} 
-                                    style={styles.markerIcon} 
-                                    resizeMode="contain"
-                                />
-                            </View>
-                        </MarkerView>
-                </MapView>
-            ) : (
-                <View style={styles.loading}>
-                    <Text style={styles.loadingText}>Loading Map...</Text>
-                </View>
-            )}
+                    <View style={styles.markerContainer}>
+                        <Image
+                            source={require('../../assets/icons/barikoi_icon.png')}
+                            style={[
+                                styles.markerIcon,
+                                MAP_STYLES.marker.iconSize
+                            ]}
+                            resizeMode="contain"
+                        />
+                    </View>
+                </MarkerView>
+            </MapView>
         </View>
     );
 }
@@ -83,12 +81,31 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: BARIKOI_COLORS.background,
     },
     loadingText: {
+        marginTop: 16,
         fontSize: 16,
-        color: '#2e8555',
+        color: BARIKOI_COLORS.primary,
         fontWeight: '500',
+    },
+    error: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: BARIKOI_COLORS.background,
+        padding: 20,
+    },
+    errorTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: BARIKOI_COLORS.secondary,
+        marginBottom: 8,
+    },
+    errorText: {
+        fontSize: 16,
+        color: BARIKOI_COLORS.text,
+        textAlign: 'center',
     },
     markerContainer: {
         alignItems: 'center',
@@ -105,7 +122,7 @@ const styles = StyleSheet.create({
     markerPin: {
         width: 8,
         height: 8,
-        backgroundColor: '#2e8555',
+        backgroundColor: BARIKOI_COLORS.primary,
         borderRadius: 4,
         position: 'absolute',
         bottom: -4,

@@ -1,24 +1,14 @@
 import { Camera, LineLayer, MapView, MarkerView, ShapeSource } from '@maplibre/maplibre-react-native';
-import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, View } from 'react-native';
+import type { FeatureCollection } from 'geojson';
+import React from "react";
+import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
+import { BARIKOI_COLORS, MAP_STYLES, useBarikoiMapStyle } from '../../utils/mapUtils';
 
 export default function LineScreen() {
-    const [styleJson, setStyleJson] = useState(null);
-
-    useEffect(() => {
-        fetch("https://map.barikoi.com/styles/osm_barikoi_v2/style.json?key=NDE2NzpVNzkyTE5UMUoy")
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.sprite) {
-                    delete data.sprite;
-                }
-                setStyleJson(data);
-            })
-            .catch((error) => console.error("Error fetching style JSON:", error));
-    }, []);
+    const { styleJson, loading, error } = useBarikoiMapStyle();
 
     // Line data - example line between two points
-    const lineGeoJSON = {
+    const lineGeoJSON: FeatureCollection = {
         type: 'FeatureCollection',
         features: [
             {
@@ -35,70 +25,72 @@ export default function LineScreen() {
         ]
     };
 
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color={BARIKOI_COLORS.primary} />
+                <Text style={styles.loadingText}>Loading Map...</Text>
+            </View>
+        );
+    }
+
+    if (error) {
+        return (
+            <View style={styles.errorContainer}>
+                <Text style={styles.errorTitle}>Error Loading Map</Text>
+                <Text style={styles.errorText}>{error}</Text>
+            </View>
+        );
+    }
+
     return (
         <View style={styles.container}>
-            {styleJson ? (
-                <MapView
-                    style={styles.map}
-                    attributionEnabled={false}
-                    logoEnabled
-                    zoomEnabled
-                    mapStyle={styleJson}
+            <MapView
+                style={styles.map}
+                attributionEnabled={false}
+                logoEnabled
+                zoomEnabled
+                mapStyle={styleJson}
+            >
+                <Camera
+                    centerCoordinate={[90.366659, 23.824724]} // Center between the two points
+                    zoomLevel={15}
+                    animationDuration={1000}
+                    animationMode="linearTo"
+                />
+
+                <ShapeSource id="lineSource" shape={lineGeoJSON}>
+                    <LineLayer id="lineLayer" style={MAP_STYLES.line} />
+                </ShapeSource>
+
+                {/* Start point marker */}
+                <MarkerView
+                    coordinate={[90.364159, 23.823724]}
+                    anchor={{ x: 0.5, y: 1.0 }}
                 >
-                    <Camera
-                        centerCoordinate={[90.366659, 23.824724]} // Center between the two points
-                        zoomLevel={15}
-                        animationDuration={1000}
-                        animationMode="linearTo"
-                    />
-
-                    {/* Line between points */}
-                    {/* @ts-ignore */}
-                    <ShapeSource id="lineSource" shape={lineGeoJSON}>
-                        <LineLayer
-                            id="lineLayer"
-                            style={{
-                                lineColor: '#2e8555',
-                                lineWidth: 3,
-                                lineCap: 'round',
-                                lineJoin: 'round'
-                            }}
+                    <View style={styles.markerContainer}>
+                        <Image
+                            source={require('../../assets/icons/barikoi_icon.png')}
+                            style={styles.markerIcon}
+                            resizeMode="contain"
                         />
-                    </ShapeSource>
+                    </View>
+                </MarkerView>
 
-                    {/* Marker at start point */}
-                    <MarkerView
-                        coordinate={[90.364159, 23.823724]}
-                        anchor={{ x: 0.5, y: 1.0 }}
-                    >
-                        <View style={styles.markerContainer}>
-                            <Image
-                                source={require('../../assets/icons/barikoi_icon.png')}
-                                style={styles.markerIcon}
-                                resizeMode="contain"
-                            />
-                        </View>
-                    </MarkerView>
-
-                    {/* Marker at end point */}
-                    <MarkerView
-                        coordinate={[90.369159, 23.825724]}
-                        anchor={{ x: 0.5, y: 1.0 }}
-                    >
-                        <View style={styles.markerContainer}>
-                            <Image
-                                source={require('../../assets/icons/barikoi_icon.png')}
-                                style={styles.markerIcon}
-                                resizeMode="contain"
-                            />
-                        </View>
-                    </MarkerView>
-                </MapView>
-            ) : (
-                <View style={styles.loading}>
-                    <Text style={styles.loadingText}>Loading Map...</Text>
-                </View>
-            )}
+                {/* End point marker */}
+                <MarkerView
+                    coordinate={[90.369159, 23.825724]}
+                    anchor={{ x: 0.5, y: 1.0 }}
+                >
+                    <View style={styles.markerContainer}>
+                        <Image
+                            source={require('../../assets/icons/barikoi_icon.png')}
+                            style={styles.markerIcon}
+                            resizeMode="contain"
+                        />
+                    </View>
+                </MarkerView>
+            </MapView>
         </View>
     );
 }
@@ -109,19 +101,37 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     map: {
-        width: "100%",
-        height: "100%",
+        flex: 1,
     },
-    loading: {
+    loadingContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: BARIKOI_COLORS.background,
     },
     loadingText: {
+        marginTop: 16,
         fontSize: 16,
-        color: '#2e8555',
+        color: BARIKOI_COLORS.primary,
         fontWeight: '500',
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: BARIKOI_COLORS.background,
+        padding: 20,
+    },
+    errorTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: BARIKOI_COLORS.secondary,
+        marginBottom: 8,
+    },
+    errorText: {
+        fontSize: 16,
+        color: BARIKOI_COLORS.text,
+        textAlign: 'center',
     },
     markerContainer: {
         alignItems: 'center',

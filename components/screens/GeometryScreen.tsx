@@ -1,30 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Image } from 'react-native';
-import { MapView, Camera, MarkerView, ShapeSource, FillLayer, LineLayer } from '@maplibre/maplibre-react-native';
+import { Camera, FillLayer, LineLayer, MapView, MarkerView, ShapeSource } from '@maplibre/maplibre-react-native';
+import type { FeatureCollection } from 'geojson';
+import React from "react";
+import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
+import { BARIKOI_COLORS, MAP_STYLES, useBarikoiMapStyle } from '../../utils/mapUtils';
 
 export default function GeometryScreen() {
-    const [styleJson, setStyleJson] = useState(null);
-
-    useEffect(() => {
-        fetch("https://map.barikoi.com/styles/osm_barikoi_v2/style.json?key=NDE2NzpVNzkyTE5UMUoy")
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.sprite) {
-                    delete data.sprite;
-                }
-                setStyleJson(data);
-            })
-            .catch((error) => console.error("Error fetching style JSON:", error));
-    }, []);
+    const { styleJson, loading, error } = useBarikoiMapStyle();
 
     // Center point
-    const centerPoint = [90.366659, 23.823724];
-    
+    const centerPoint: [number, number] = [90.366659, 23.823724];
+
     // Circle polygon (approximated with points)
-    const createCirclePoints = (center:any, radiusInKm:any, points = 64) => {
+    const createCirclePoints = (center: [number, number], radiusInKm: number, points = 64) => {
         const coords = [];
         const km = radiusInKm;
-        
+
         for (let i = 0; i < points; i++) {
             const angle = (i * 2 * Math.PI) / points;
             const dx = Math.cos(angle) * km / 111.32;
@@ -34,52 +24,42 @@ export default function GeometryScreen() {
                 center[1] + dy
             ]);
         }
-        
+
         // Close the circle
         coords.push(coords[0]);
-        
+
         return coords;
     };
-    
-    const circlePoints = createCirclePoints(centerPoint, 0.3); // 300m radius
-    
-    // Geometry data with multiple shapes
-    const geometryGeoJSON = {
+
+    const circlePoints = createCirclePoints(centerPoint, 0.3);
+
+    // Create GeoJSON for the circle
+    const circleGeoJSON: FeatureCollection = {
         type: 'FeatureCollection',
         features: [
-            // Circle (polygon)
             {
                 type: 'Feature',
-                properties: { name: 'circle' },
+                properties: {},
                 geometry: {
                     type: 'Polygon',
                     coordinates: [circlePoints]
                 }
-            },
-            // Square (polygon)
+            }
+        ]
+    };
+
+    // Create GeoJSON for the line
+    const lineGeoJSON: FeatureCollection = {
+        type: 'FeatureCollection',
+        features: [
             {
                 type: 'Feature',
-                properties: { name: 'square' },
-                geometry: {
-                    type: 'Polygon',
-                    coordinates: [[
-                        [90.362159, 23.825724], // Top-left
-                        [90.366159, 23.825724], // Top-right
-                        [90.366159, 23.821724], // Bottom-right
-                        [90.362159, 23.821724], // Bottom-left
-                        [90.362159, 23.825724]  // Close the polygon
-                    ]]
-                }
-            },
-            // Line
-            {
-                type: 'Feature',
-                properties: { name: 'line' },
+                properties: {},
                 geometry: {
                     type: 'LineString',
                     coordinates: [
-                        [90.367159, 23.825724], // Start
-                        [90.371159, 23.821724]  // End
+                        [90.364159, 23.823724],
+                        [90.369159, 23.825724]
                     ]
                 }
             }
@@ -88,77 +68,69 @@ export default function GeometryScreen() {
 
     // Marker points
     const markerPoints = [
-        { coordinate: centerPoint, label: 'Center' },
-        { coordinate: [90.362159, 23.825724], label: 'Square TL' },
-        { coordinate: [90.367159, 23.825724], label: 'Line Start' },
-        { coordinate: [90.371159, 23.821724], label: 'Line End' }
+        { coordinate: [90.364159, 23.823724] },
+        { coordinate: [90.369159, 23.825724] },
+        { coordinate: centerPoint }
     ];
+
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color={BARIKOI_COLORS.primary} />
+                <Text style={styles.loadingText}>Loading Map...</Text>
+            </View>
+        );
+    }
+
+    if (error) {
+        return (
+            <View style={styles.errorContainer}>
+                <Text style={styles.errorTitle}>Error Loading Map</Text>
+                <Text style={styles.errorText}>{error}</Text>
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>
-            {styleJson ? (
-                <MapView
-                    style={styles.map}
-                    attributionEnabled={false}
-                    logoEnabled
-                    zoomEnabled
-                    mapStyle={styleJson}
-                >
-                    <Camera
-                        centerCoordinate={centerPoint}
-                        zoomLevel={14.5}
-                        animationDuration={1000}
-                        animationMode="linearTo"
-                    />
-                    
-                    {/* All geometry shapes */}
-                    {/* @ts-ignore */}
-                    <ShapeSource id="geometrySource" shape={geometryGeoJSON}>
-                        {/* Circle and square fill */}
-                        <FillLayer 
-                            id="polygonFill" 
-                            filter={['in', ['get', 'name'], ['literal', ['circle', 'square']]]}
-                            style={{
-                                fillColor: 'rgba(46, 133, 85, 0.3)', // Semi-transparent green
-                                fillOutlineColor: '#2e8555'
-                            }} 
-                        />
-                        
-                        {/* Line */}
-                        <LineLayer 
-                            id="lineLayer"
-                            filter={['==', ['get', 'name'], 'line']}
-                            style={{
-                                lineColor: '#e74c3c',
-                                lineWidth: 3,
-                                lineCap: 'round',
-                                lineJoin: 'round'
-                            }} 
-                        />
-                    </ShapeSource>
-                    
-                    {/* Markers */}
-                    {markerPoints.map((point, index) => (
-                        <MarkerView
-                            key={`marker-${index+1}`}
-                            coordinate={point.coordinate}
-                            anchor={{ x: 0.5, y: 1.0 }}
-                        >
-                            <View style={styles.markerContainer}>
-                                <Image 
-                                    source={require('../../assets/icons/barikoi_icon.png')} 
-                                    style={styles.markerIcon} 
-                                    resizeMode="contain"
-                                />
-                            </View>
-                        </MarkerView>
-                    ))}
-                </MapView>
-            ) : (
-                <View style={styles.loading}>
-                    <Text style={styles.loadingText}>Loading Map...</Text>
-                </View>
-            )}
+            <MapView
+                style={styles.map}
+                attributionEnabled={false}
+                logoEnabled
+                zoomEnabled
+                mapStyle={styleJson}
+            >
+                <Camera
+                    centerCoordinate={centerPoint}
+                    zoomLevel={15}
+                    animationDuration={1000}
+                    animationMode="linearTo"
+                />
+
+                <ShapeSource id="circleSource" shape={circleGeoJSON}>
+                    <FillLayer id="circleFill" style={MAP_STYLES.polygon} />
+                </ShapeSource>
+
+                <ShapeSource id="lineSource" shape={lineGeoJSON}>
+                    <LineLayer id="lineLayer" style={MAP_STYLES.line} />
+                </ShapeSource>
+
+                {markerPoints.map((point, index) => (
+                    <MarkerView
+                        key={`marker-${index + 1}`}
+                        coordinate={point.coordinate}
+                        anchor={{ x: 0.5, y: 1.0 }}
+                    >
+                        <View style={styles.markerContainer}>
+                            <Image
+                                source={require('../../assets/icons/barikoi_icon.png')}
+                                style={styles.markerIcon}
+                                resizeMode="contain"
+                            />
+                        </View>
+                    </MarkerView>
+                ))}
+            </MapView>
         </View>
     );
 }
@@ -169,19 +141,37 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     map: {
-        width: "100%",
-        height: "100%",
+        flex: 1,
     },
-    loading: {
+    loadingContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: BARIKOI_COLORS.background,
     },
     loadingText: {
+        marginTop: 16,
         fontSize: 16,
-        color: '#2e8555',
+        color: BARIKOI_COLORS.primary,
         fontWeight: '500',
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: BARIKOI_COLORS.background,
+        padding: 20,
+    },
+    errorTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: BARIKOI_COLORS.secondary,
+        marginBottom: 8,
+    },
+    errorText: {
+        fontSize: 16,
+        color: BARIKOI_COLORS.text,
+        textAlign: 'center',
     },
     markerContainer: {
         alignItems: 'center',
