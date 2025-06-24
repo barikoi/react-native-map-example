@@ -1,18 +1,17 @@
 import { Camera, MapView, MarkerView } from "@maplibre/maplibre-react-native";
 import React from "react";
-import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import {
     BARIKOI_COLORS,
     DEFAULT_CAMERA_SETTINGS,
     MAP_STYLES,
     useBarikoiMapStyle
 } from '../../utils/mapUtils';
+import BarikoiLogo from '../BarikoiLogo';
 
 export default function SimpleMapScreen() {
-    // Use the custom hook for better error handling and loading states
     const { styleJson, loading, error } = useBarikoiMapStyle();
 
-    // Loading state
     if (loading) {
         return (
             <View style={styles.loading}>
@@ -22,7 +21,6 @@ export default function SimpleMapScreen() {
         );
     }
 
-    // Error state
     if (error) {
         return (
             <View style={styles.error}>
@@ -37,16 +35,17 @@ export default function SimpleMapScreen() {
             <MapView
                 style={styles.map}
                 attributionEnabled={false}
-                logoEnabled
                 zoomEnabled
+                compassEnabled
+                compassViewPosition={10}
                 mapStyle={styleJson}
-                
             >
                 <Camera
                     centerCoordinate={DEFAULT_CAMERA_SETTINGS.centerCoordinate}
                     zoomLevel={DEFAULT_CAMERA_SETTINGS.zoomLevel}
                     animationDuration={DEFAULT_CAMERA_SETTINGS.animationDuration}
                     animationMode={DEFAULT_CAMERA_SETTINGS.animationMode}
+
                 />
                 <MarkerView
                     coordinate={DEFAULT_CAMERA_SETTINGS.centerCoordinate}
@@ -64,6 +63,14 @@ export default function SimpleMapScreen() {
                     </View>
                 </MarkerView>
             </MapView>
+
+            {/* Barikoi Logo Attribution */}
+            <Pressable
+                style={styles.logoContainer}
+                onPress={() => Linking.openURL('https://barikoi.com')}
+            >
+                <BarikoiLogo width={80} height={23} />
+            </Pressable>
         </View>
     );
 }
@@ -111,20 +118,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    iconContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     markerIcon: {
         width: 40,
         height: 40,
     },
-    markerPin: {
-        width: 8,
-        height: 8,
-        backgroundColor: BARIKOI_COLORS.primary,
-        borderRadius: 4,
+    logoContainer: {
         position: 'absolute',
-        bottom: -4,
+        left: 16,
+        bottom: Platform.select({ ios: 32, android: 24 }),
+        opacity: 0.9,
     }
 }); 

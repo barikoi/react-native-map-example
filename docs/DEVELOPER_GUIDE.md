@@ -211,6 +211,89 @@ export default function LineScreen() {
 }
 ```
 
+### 5. Marker Clustering with GeoJSON
+
+For displaying many markers efficiently, you can use GeoJSON with ShapeSource and SymbolLayer:
+
+```typescript
+// screens/MarkerScreen.tsx (GeoJSON approach)
+import { ShapeSource, SymbolLayer } from "@maplibre/maplibre-react-native";
+import type { Feature, FeatureCollection } from "geojson";
+
+// Convert markers to GeoJSON format
+const pointsCollection = useMemo<FeatureCollection>(
+  () => ({
+    type: "FeatureCollection",
+    features: markers.map(
+      (marker): Feature => ({
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: marker.coordinate,
+        },
+        properties: {
+          id: marker.id,
+          title: marker.title,
+          description: marker.description,
+        },
+      })
+    ),
+  }),
+  []
+);
+
+// In your render function
+<ShapeSource
+  id="markersSource"
+  shape={pointsCollection}
+  onPress={handleMapPress}
+  cluster
+  clusterRadius={50}
+  clusterMaxZoomLevel={14}
+>
+  {/* Clustered Points */}
+  <SymbolLayer
+    id="clusterCount"
+    style={{
+      textField: ["get", "point_count"],
+      textSize: 14,
+      textColor: "#FFFFFF",
+      textAnchor: "center",
+      iconImage: require("../../assets/icons/barikoi_icon.png"),
+      iconSize: 0.7,
+      iconAllowOverlap: true,
+      textAllowOverlap: true,
+    }}
+    filter={["has", "point_count"]}
+  />
+
+  {/* Individual Points */}
+  <SymbolLayer
+    id="singlePoint"
+    style={{
+      iconImage: require("../../assets/icons/barikoi_icon.png"),
+      iconSize: 0.5,
+      iconAllowOverlap: true,
+      textField: ["get", "title"],
+      textSize: 12,
+      textColor: "#00A66B",
+      textAnchor: "top",
+      textOffset: [0, 1],
+      textAllowOverlap: false,
+      textOptional: true,
+    }}
+    filter={["!", ["has", "point_count"]]}
+  />
+</ShapeSource>;
+```
+
+This approach offers several benefits:
+
+- Efficiently renders hundreds of markers
+- Automatic clustering of nearby points
+- Native rendering performance
+- Customizable appearance for both clusters and individual points
+
 ## 🔍 Advanced Features
 
 ### 1. Bottom Sheet Details

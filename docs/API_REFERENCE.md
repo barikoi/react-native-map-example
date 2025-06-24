@@ -65,6 +65,42 @@ Controls the map's viewport.
 - `animationDuration`: number - Animation time in ms
 - `animationMode`: "flyTo" | "linearTo" | "moveTo"
 
+### `<SymbolLayer />`
+
+Renders point features as symbols or icons.
+
+```typescript
+<ShapeSource id="pointsSource" shape={pointsCollection}>
+  <SymbolLayer
+    id="pointLayer"
+    style={{
+      iconImage: require("../../assets/icons/barikoi_icon.png"),
+      iconSize: 0.5,
+      iconAllowOverlap: true,
+      textField: ["get", "title"],
+      textSize: 12,
+      textColor: "#00A66B",
+      textAnchor: "top",
+      textOffset: [0, 1],
+    }}
+  />
+</ShapeSource>
+```
+
+#### Props
+
+- **`id`**: string (required) - Unique identifier for the layer
+- **`style`**: Object - Style properties for the symbols
+  - **`iconImage`**: Image source for the icon
+  - **`iconSize`**: number - Size multiplier for the icon
+  - **`iconAllowOverlap`**: boolean - Whether icons can overlap
+  - **`textField`**: string | Expression - Text to display
+  - **`textSize`**: number - Font size for the text
+  - **`textColor`**: string - Color for the text
+  - **`textAnchor`**: string - Anchor position for the text
+  - **`textOffset`**: [number, number] - Offset [x, y] for the text
+- **`filter`**: Expression - Filter expression to determine which features to render
+
 ## Hooks
 
 ### useBarikoiMapStyle
@@ -466,6 +502,42 @@ Used to render geometric shapes from GeoJSON data.
 Displays the user's current location on the map.
 
 - **`onUpdate`**: A callback function that fires with updated location data.
+
+### `<SymbolLayer />`
+
+Renders point features as symbols or icons.
+
+```typescript
+<ShapeSource id="pointsSource" shape={pointsCollection}>
+  <SymbolLayer
+    id="pointLayer"
+    style={{
+      iconImage: require("../../assets/icons/barikoi_icon.png"),
+      iconSize: 0.5,
+      iconAllowOverlap: true,
+      textField: ["get", "title"],
+      textSize: 12,
+      textColor: "#00A66B",
+      textAnchor: "top",
+      textOffset: [0, 1],
+    }}
+  />
+</ShapeSource>
+```
+
+#### Props
+
+- **`id`**: string (required) - Unique identifier for the layer
+- **`style`**: Object - Style properties for the symbols
+  - **`iconImage`**: Image source for the icon
+  - **`iconSize`**: number - Size multiplier for the icon
+  - **`iconAllowOverlap`**: boolean - Whether icons can overlap
+  - **`textField`**: string | Expression - Text to display
+  - **`textSize`**: number - Font size for the text
+  - **`textColor`**: string - Color for the text
+  - **`textAnchor`**: string - Anchor position for the text
+  - **`textOffset`**: [number, number] - Offset [x, y] for the text
+- **`filter`**: Expression - Filter expression to determine which features to render
 
 ---
 

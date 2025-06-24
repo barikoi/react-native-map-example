@@ -1,8 +1,9 @@
 import { Camera, FillLayer, LineLayer, MapView, MarkerView, ShapeSource } from '@maplibre/maplibre-react-native';
 import type { FeatureCollection } from 'geojson';
 import React from "react";
-import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { BARIKOI_COLORS, MAP_STYLES, useBarikoiMapStyle } from '../../utils/mapUtils';
+import BarikoiLogo from '../BarikoiLogo';
 
 export default function GeometryScreen() {
     const { styleJson, loading, error } = useBarikoiMapStyle();
@@ -96,8 +97,9 @@ export default function GeometryScreen() {
             <MapView
                 style={styles.map}
                 attributionEnabled={false}
-                logoEnabled
-                zoomEnabled
+                zoomEnabled={true}
+                compassEnabled
+                compassViewPosition={10}
                 mapStyle={styleJson}
             >
                 <Camera
@@ -131,6 +133,14 @@ export default function GeometryScreen() {
                     </MarkerView>
                 ))}
             </MapView>
+
+            {/* Barikoi Logo Attribution */}
+            <Pressable
+                style={styles.logoContainer}
+                onPress={() => Linking.openURL('https://barikoi.com')}
+            >
+                <BarikoiLogo width={80} height={23} />
+            </Pressable>
         </View>
     );
 }
@@ -181,4 +191,10 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
     },
+    logoContainer: {
+        position: 'absolute',
+        left: 16,
+        bottom: Platform.select({ ios: 32, android: 24 }),
+        opacity: 0.9,
+    }
 }); 

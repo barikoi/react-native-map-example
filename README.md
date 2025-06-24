@@ -100,15 +100,16 @@ const BARIKOI_API_KEY = "YOUR_API_KEY_HERE";
 
 ### Core Features
 
-![Simple Map](./assets/screenshots/simple-map.png)
-![Current Location](./assets/screenshots/current-location.png)
-![Custom Markers](./assets/screenshots/custom-markers.png)
+![Simple Map](./assets/screenshorts/simple-map.jpg)
+![Current Location](./assets/screenshorts/current-location.jpg)
+![Custom Markers](./assets/screenshorts/markar.jpg)
 
 ### Advanced Features
 
-![Line Drawing](./assets/screenshots/line-drawing.png)
-![Polygon Shapes](./assets/screenshots/polygon-shapes.png)
-![Complex Geometry](./assets/screenshots/complex-geometry.png)
+![Line Drawing](./assets/screenshorts/line.jpg)
+![Polygon Shapes](./assets/screenshorts/polygon.jpg)
+![Complex Geometry](./assets/screenshorts/geometry.jpg)
+![Advanced Map](./assets/screenshorts/advanced-map.jpg)
 
 ## 🏗️ How It Works
 
@@ -308,3 +309,56 @@ Contributions are welcome! For major changes, please open an issue first to disc
 ---
 
 **Built with ❤️ for the React Native community.**
+
+## 📱 Publishing Your App
+
+### Building for Production
+
+When you're ready to publish your app, you can create optimized production builds:
+
+```bash
+# Build for Android
+eas build --platform android
+
+# Build for iOS
+eas build --platform ios
+```
+
+### App Store & Google Play Submission
+
+#### iOS App Store
+
+1. Create an Apple Developer account ($99/year)
+2. Generate an App Store Connect record for your app
+3. Configure app icons, splash screens, and metadata
+4. Submit the build through TestFlight for testing
+5. Once approved, submit for App Store Review
+
+#### Google Play Store
+
+1. Create a Google Play Developer account ($25 one-time fee)
+2. Set up a new application in the Google Play Console
+3. Configure store listing, content rating, and pricing
+4. Upload your signed APK or App Bundle
+5. Submit for review and publication
+
+### EAS Build Configuration
+
+This project includes a basic `eas.json` configuration:
+
+```json
+{
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {}
+  }
+}
+```
+
+For more details on publishing, refer to the [Expo documentation](https://docs.expo.dev/distribution/introduction/).

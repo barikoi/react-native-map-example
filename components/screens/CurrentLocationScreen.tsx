@@ -1,9 +1,11 @@
+import { Ionicons } from '@expo/vector-icons';
 import type { Location } from '@maplibre/maplibre-react-native';
 import { Camera, MapView, MarkerView, UserLocation } from '@maplibre/maplibre-react-native';
 import * as ExpoLocation from 'expo-location';
-import React, { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, Image, StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { ActivityIndicator, Alert, Image, Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { BARIKOI_COLORS, useBarikoiMapStyle } from '../../utils/mapUtils';
+import BarikoiLogo from '../BarikoiLogo';
 
 // Helper function to convert Expo location to MapLibre location
 const convertLocation = (expoLocation: ExpoLocation.LocationObject): Location => ({
@@ -24,16 +26,42 @@ export default function CurrentLocationScreen() {
     const [hasLocationPermission, setHasLocationPermission] = useState(false);
     const [permissionLoading, setPermissionLoading] = useState(true);
     const [hasFlownToLocation, setHasFlownToLocation] = useState(false);
+    const [followsUserLocation, setFollowsUserLocation] = useState(false);
     const cameraRef = useRef<any>(null);
 
     useEffect(() => {
-        // Request location permission
+        // Request location permission and start watching location
         requestLocationPermission();
-    }, []);
+        let locationSubscription: ExpoLocation.LocationSubscription;
 
-    // Fly to user location when first location is received
+        const startWatchingLocation = async () => {
+            locationSubscription = await ExpoLocation.watchPositionAsync(
+                {
+                    accuracy: ExpoLocation.Accuracy.High,
+                    timeInterval: 1000,
+                    distanceInterval: 10,
+                },
+                (location) => {
+                    setUserLocation(convertLocation(location));
+                }
+            );
+        };
+
+        if (hasLocationPermission) {
+            startWatchingLocation();
+        }
+
+        // Cleanup subscription on unmount
+        return () => {
+            if (locationSubscription) {
+                locationSubscription.remove();
+            }
+        };
+    }, [hasLocationPermission]);
+
+    // Fly to user location when first location is received or when followsUserLocation is true
     useEffect(() => {
-        if (userLocation && !hasFlownToLocation && cameraRef.current) {
+        if (userLocation && (followsUserLocation || !hasFlownToLocation) && cameraRef.current) {
             const { latitude, longitude } = userLocation.coords;
 
             // Smooth animated fly to user location with zoom level 16
@@ -44,10 +72,12 @@ export default function CurrentLocationScreen() {
                 animationMode: 'flyTo'
             });
 
-            setHasFlownToLocation(true);
+            if (!hasFlownToLocation) {
+                setHasFlownToLocation(true);
+            }
             console.log(`Flying to user location: ${latitude}, ${longitude}`);
         }
-    }, [userLocation, hasFlownToLocation]);
+    }, [userLocation, hasFlownToLocation, followsUserLocation]);
 
     const requestLocationPermission = async () => {
         try {
@@ -90,6 +120,10 @@ export default function CurrentLocationScreen() {
         }
     };
 
+    const toggleFollowsUserLocation = useCallback(() => {
+        setFollowsUserLocation(prev => !prev);
+    }, []);
+
     // Show loading state while map style or permissions are loading
     if (mapLoading || permissionLoading) {
         return (
@@ -117,8 +151,9 @@ export default function CurrentLocationScreen() {
             <MapView
                 style={styles.map}
                 attributionEnabled={false}
-                logoEnabled
                 zoomEnabled
+                compassEnabled
+                compassViewPosition={10}
                 mapStyle={styleJson}
             >
                 <Camera
@@ -160,6 +195,28 @@ export default function CurrentLocationScreen() {
                     </MarkerView>
                 )}
             </MapView>
+
+            {/* Barikoi Logo Attribution */}
+            <Pressable
+                style={styles.logoContainer}
+                onPress={() => Linking.openURL('https://barikoi.com')}
+            >
+                <BarikoiLogo width={80} height={23} />
+            </Pressable>
+
+            {/* Location Control Button */}
+            <View style={styles.controls}>
+                <Pressable
+                    style={styles.controlButton}
+                    onPress={toggleFollowsUserLocation}
+                >
+                    <Ionicons
+                        name={followsUserLocation ? 'location' : 'location-outline'}
+                        size={24}
+                        color={BARIKOI_COLORS.primary}
+                    />
+                </Pressable>
+            </View>
         </View>
     );
 }
@@ -209,5 +266,36 @@ const styles = StyleSheet.create({
     markerIcon: {
         width: 40,
         height: 40,
+    },
+    controls: {
+        position: 'absolute',
+        right: 16,
+        bottom: Platform.select({ ios: 32, android: 24 }),
+        gap: 8,
+    },
+    controlButton: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+        ...Platform.select({
+            ios: {
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+            },
+            android: {
+                elevation: 5,
+            },
+        }),
+    },
+    logoContainer: {
+        position: 'absolute',
+        left: 16,
+        bottom: Platform.select({ ios: 32, android: 24 }),
+        opacity: 0.9,
     },
 }); 

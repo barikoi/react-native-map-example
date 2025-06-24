@@ -1,40 +1,41 @@
 import { Camera, MapView, MarkerView } from '@maplibre/maplibre-react-native';
 import React, { useCallback, useRef, useState } from "react";
-import { ActivityIndicator, Animated, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Animated, Image, Linking, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { BARIKOI_COLORS, useBarikoiMapStyle } from '../../utils/mapUtils';
+import BarikoiLogo from '../BarikoiLogo';
 
 // Define marker data
 const markers = [
     {
         id: '1',
-        coordinate: [90.364159, 23.823724],
-        title: 'Mirpur DOHS',
-        description: 'Residential Area'
-    },
-    {
-        id: '2',
         coordinate: [90.389709, 23.874577],
         title: 'Uttara',
         description: 'Modern Township'
     },
     {
-        id: '3',
+        id: '2',
         coordinate: [90.415482, 23.793059],
         title: 'Gulshan',
         description: 'Business District'
     },
     {
-        id: '4',
+        id: '3',
         coordinate: [90.367456, 23.747431],
         title: 'Dhanmondi',
         description: 'Cultural Hub'
     },
     {
-        id: '5',
+        id: '4',
         coordinate: [90.399452, 23.869585],
         title: 'Airport',
         description: 'Hazrat Shahjalal International'
-    }
+    },
+    {
+        id: '5',
+        coordinate: [90.364159, 23.823724],
+        title: 'Barikoi Head Office',
+        description: 'Main office location'
+    },
 ];
 
 export default function MarkerScreen() {
@@ -88,8 +89,9 @@ export default function MarkerScreen() {
             <MapView
                 style={styles.map}
                 attributionEnabled={false}
-                logoEnabled
                 zoomEnabled
+                compassEnabled
+                compassViewPosition={10}
                 mapStyle={styleJson}
             >
                 <Camera
@@ -162,6 +164,14 @@ export default function MarkerScreen() {
                         </View>
                     </View>
                 )}
+
+                  {/* Barikoi Logo Attribution */}
+            <Pressable
+                style={styles.logoContainer}
+                onPress={() => Linking.openURL('https://barikoi.com')}
+            >
+                <BarikoiLogo width={80} height={23} />
+            </Pressable>
             </Animated.View>
         </View>
     );
@@ -314,4 +324,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.1)',
         marginVertical: 8,
     },
+    logoContainer: {
+        position: 'absolute',
+        left: 16,
+        bottom: Platform.select({ ios: 32, android: 24 }),
+        opacity: 0.9,
+    }
 }); 
