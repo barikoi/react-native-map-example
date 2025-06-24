@@ -2,6 +2,14 @@
 
 A comprehensive React Native application demonstrating various map features using **Barikoi Maps**, Bangladesh's leading mapping service, integrated with **@maplibre/maplibre-react-native**. This project serves as a complete example for the React Native community.
 
+## 📦 Version Info
+
+- **Project Version**: 1.0.0
+- **React Native**: 0.72.6
+- **Expo**: ~49.0.15
+- **@maplibre/maplibre-react-native**: ^9.1.0
+- **expo-location**: ~16.1.0
+
 ## 📚 Documentation
 
 This project includes comprehensive documentation to help you get started and build advanced features.
@@ -32,19 +40,44 @@ This project includes comprehensive documentation to help you get started and bu
 ### Prerequisites
 
 - Node.js (v18 or higher)
-- Expo CLI
-- Android Studio / Xcode for device testing
+- Expo CLI (`npm install -g expo-cli`)
+- Android Studio (for Android development)
+- Xcode (for iOS development, macOS only)
 - A Barikoi API Key ([Get one here](https://barikoi.com))
+
+### Development Environment Setup
+
+#### For iOS (macOS only)
+
+1. Install Xcode from the Mac App Store
+2. Install Xcode Command Line Tools:
+   ```bash
+   xcode-select --install
+   ```
+3. Install CocoaPods:
+   ```bash
+   sudo gem install cocoapods
+   ```
+
+#### For Android
+
+1. Install Android Studio
+2. Install Android SDK (minimum SDK 21)
+3. Set up Android environment variables (ANDROID_HOME)
+4. Create an Android Virtual Device (AVD)
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/iazadur/expo-map-app.git
 cd expo-map-app
 
 # Install dependencies
 npm install
+
+# Install iOS dependencies (macOS only)
+cd ios && pod install && cd ..
 
 # Start the development server
 npm start
@@ -56,13 +89,26 @@ npm run ios
 
 ### 🔑 API Key Setup
 
-Add your Barikoi API key to `utils/mapUtils.ts`:
+1. Get your API key from [Barikoi Dashboard](https://barikoi.com/dashboard)
+2. Add your Barikoi API key to `utils/mapUtils.ts`:
 
 ```typescript
 const BARIKOI_API_KEY = "YOUR_API_KEY_HERE";
 ```
 
----
+## 🖼️ Screenshots
+
+### Core Features
+
+![Simple Map](./assets/screenshots/simple-map.png)
+![Current Location](./assets/screenshots/current-location.png)
+![Custom Markers](./assets/screenshots/custom-markers.png)
+
+### Advanced Features
+
+![Line Drawing](./assets/screenshots/line-drawing.png)
+![Polygon Shapes](./assets/screenshots/polygon-shapes.png)
+![Complex Geometry](./assets/screenshots/complex-geometry.png)
 
 ## 🏗️ How It Works
 
@@ -216,6 +262,48 @@ Contributions are welcome! For major changes, please open an issue first to disc
 
 - **Barikoi Maps**: [https://barikoi.com](https://barikoi.com)
 - **Barikoi API Docs**: [https://docs.barikoi.com](https://docs.barikoi.com)
+
+## ❗ Troubleshooting
+
+### Common Issues
+
+1. **Map not displaying**
+
+   - Check if your API key is correctly set in `utils/mapUtils.ts`
+   - Ensure you have an active internet connection
+   - Verify that the Barikoi servers are accessible
+
+2. **Location permission issues**
+
+   - For Android: Check if location permissions are granted in app settings
+   - For iOS: Verify location permissions in Settings > Privacy > Location Services
+
+3. **Build errors**
+
+   - Clean the build:
+
+     ```bash
+     # For Android
+     cd android && ./gradlew clean && cd ..
+
+     # For iOS
+     cd ios && pod deintegrate && pod install && cd ..
+     ```
+
+   - Clear Metro bundler cache:
+     ```bash
+     npm start -- --reset-cache
+     ```
+
+4. **Marker/Shape rendering issues**
+   - Ensure coordinates are in the correct format [longitude, latitude]
+   - Check if the coordinates are within Bangladesh bounds
+   - Verify GeoJSON structure for complex shapes
+
+### Still Having Issues?
+
+- Check our [Issues](https://github.com/iazadur/expo-map-app/issues) page
+- Contact Barikoi Support: support@barikoi.com
 
 ---
 

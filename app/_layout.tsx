@@ -96,6 +96,14 @@ export default function RootLayout() {
             }}
           />
           <Drawer.Screen
+            name="advanced-map"
+            options={{
+              drawerLabel: 'Advanced Map',
+              drawerIcon: () => <Text style={{ fontSize: 20 }}>🗺️</Text>,
+              title: 'Advanced Map',
+            }}
+          />
+          <Drawer.Screen
             name="+not-found"
             options={{
               drawerItemStyle: { display: 'none' },

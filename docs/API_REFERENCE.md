@@ -1,3 +1,358 @@
+# 📚 Barikoi Maps React Native API Reference
+
+## Core Components
+
+### MapView
+
+The root component for displaying maps.
+
+```typescript
+import { MapView } from "@maplibre/maplibre-react-native";
+
+<MapView
+  style={{ flex: 1 }}
+  mapStyle={styleJson}
+  logoEnabled={true}
+  attributionEnabled={false}
+  onPress={(e) => console.log(e.coordinates)}
+  onMapIdle={() => console.log("Map has stopped moving")}
+/>;
+```
+
+#### Props
+
+- `mapStyle`: Object (required) - Map style JSON from Barikoi
+- `logoEnabled`: boolean - Show/hide the Barikoi logo
+- `attributionEnabled`: boolean - Show/hide attribution
+- `onPress`: (event: { coordinates: [number, number] }) => void
+- `onMapIdle`: () => void
+
+### MarkerView
+
+Renders a custom marker on the map.
+
+```typescript
+<MarkerView coordinate={[90.364159, 23.823724]} anchor={{ x: 0.5, y: 1.0 }}>
+  <Pressable onPress={handlePress}>
+    <Image source={require("./marker-icon.png")} />
+  </Pressable>
+</MarkerView>
+```
+
+#### Props
+
+- `coordinate`: [number, number] - [longitude, latitude]
+- `anchor`: { x: number, y: number } - Anchor point
+- `children`: ReactNode - Custom marker content
+
+### Camera
+
+Controls the map's viewport.
+
+```typescript
+<Camera
+  centerCoordinate={[90.389709, 23.824577]}
+  zoomLevel={11.5}
+  animationDuration={1000}
+  animationMode="flyTo"
+/>
+```
+
+#### Props
+
+- `centerCoordinate`: [number, number] - Center point
+- `zoomLevel`: number - Zoom level (0-22)
+- `animationDuration`: number - Animation time in ms
+- `animationMode`: "flyTo" | "linearTo" | "moveTo"
+
+## Hooks
+
+### useBarikoiMapStyle
+
+Fetches and manages the Barikoi map style.
+
+```typescript
+const { styleJson, loading, error } = useBarikoiMapStyle();
+```
+
+#### Returns
+
+- `styleJson`: Object | null - Map style configuration
+- `loading`: boolean - Loading state
+- `error`: string | null - Error message if any
+
+## Utilities
+
+### BARIKOI_COLORS
+
+Standard color palette for consistent styling.
+
+```typescript
+export const BARIKOI_COLORS = {
+  primary: "#00A66B",
+  secondary: "#151718",
+  background: "#FFFFFF",
+  text: "#11181C",
+  primaryLight: "#E6F4EF",
+};
+```
+
+### MAP_STYLES
+
+Predefined styles for map elements.
+
+```typescript
+export const MAP_STYLES = {
+  line: {
+    lineColor: BARIKOI_COLORS.primary,
+    lineWidth: 3,
+  },
+  polygon: {
+    fillColor: BARIKOI_COLORS.primary,
+    fillOpacity: 0.5,
+  },
+  marker: {
+    width: 40,
+    height: 40,
+  },
+};
+```
+
+## GeoJSON Types
+
+### LineString
+
+```typescript
+const lineGeoJSON = {
+  type: "Feature",
+  geometry: {
+    type: "LineString",
+    coordinates: [
+      [90.367456, 23.747431],
+      [90.415482, 23.793059],
+    ],
+  },
+};
+```
+
+### Polygon
+
+```typescript
+const polygonGeoJSON = {
+  type: "Feature",
+  geometry: {
+    type: "Polygon",
+    coordinates: [
+      [
+        [90.367456, 23.747431],
+        [90.415482, 23.793059],
+        [90.399452, 23.869585],
+        [90.367456, 23.747431], // Close the polygon
+      ],
+    ],
+  },
+};
+```
+
+## Event Types
+
+### MapPressEvent
+
+```typescript
+interface MapPressEvent {
+  coordinates: [number, number]; // [longitude, latitude]
+  point: [number, number]; // Screen coordinates [x, y]
+}
+```
+
+### MarkerPressEvent
+
+```typescript
+interface MarkerPressEvent {
+  id: string;
+  coordinate: [number, number];
+}
+```
+
+## Constants
+
+### Default Camera Settings
+
+```typescript
+export const DEFAULT_CAMERA = {
+  centerCoordinate: [90.389709, 23.824577], // Dhaka
+  zoomLevel: 11.5,
+  animationDuration: 1000,
+};
+```
+
+### Bangladesh Bounds
+
+```typescript
+export const BD_BOUNDS = {
+  ne: [92.6744, 26.6342], // Northeast corner
+  sw: [88.0075, 20.7386], // Southwest corner
+};
+```
+
+## Error Handling
+
+### Error Types
+
+```typescript
+type MapError = {
+  code: string;
+  message: string;
+  details?: any;
+};
+
+// Common error codes
+const MAP_ERROR_CODES = {
+  STYLE_LOAD_ERROR: "style_load_error",
+  LOCATION_PERMISSION_DENIED: "location_permission_denied",
+  NETWORK_ERROR: "network_error",
+};
+```
+
+## Type Definitions
+
+### Coordinate Type
+
+```typescript
+type Coordinate = [number, number]; // [longitude, latitude]
+```
+
+### Marker Type
+
+```typescript
+interface Marker {
+  id: string;
+  coordinate: Coordinate;
+  title?: string;
+  description?: string;
+}
+```
+
+### Camera Type
+
+```typescript
+interface Camera {
+  centerCoordinate: Coordinate;
+  zoomLevel: number;
+  bearing?: number;
+  pitch?: number;
+  animationDuration?: number;
+  animationMode?: "flyTo" | "linearTo" | "moveTo";
+}
+```
+
+## Best Practices
+
+### Memory Management
+
+- Use `useCallback` for event handlers
+- Memoize markers with `useMemo`
+- Clean up listeners in `useEffect`
+
+```typescript
+const handleMarkerPress = useCallback((id: string) => {
+  // Handle press
+}, []);
+
+const markers = useMemo(
+  () =>
+    data.map((item) => (
+      <MarkerView key={item.id} coordinate={item.coordinate}>
+        <CustomMarker onPress={() => handleMarkerPress(item.id)} />
+      </MarkerView>
+    )),
+  [data, handleMarkerPress]
+);
+```
+
+### Performance Tips
+
+1. Use `MarkerView` instead of `Marker` for better performance
+2. Implement marker clustering for large datasets
+3. Debounce map events
+4. Use appropriate zoom levels for different data densities
+
+## Examples
+
+### Custom Marker with Animation
+
+```typescript
+function AnimatedMarker({ coordinate }) {
+  const scale = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.spring(scale, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  return (
+    <MarkerView coordinate={coordinate}>
+      <Animated.View style={{ transform: [{ scale }] }}>
+        <View style={styles.marker} />
+      </Animated.View>
+    </MarkerView>
+  );
+}
+```
+
+### Map Controls Component
+
+```typescript
+function MapControls({ onZoomIn, onZoomOut, onLocate }) {
+  return (
+    <View style={styles.controls}>
+      <Pressable onPress={onZoomIn}>
+        <Text>+</Text>
+      </Pressable>
+      <Pressable onPress={onZoomOut}>
+        <Text>-</Text>
+      </Pressable>
+      <Pressable onPress={onLocate}>
+        <Text>📍</Text>
+      </Pressable>
+    </View>
+  );
+}
+```
+
+### Bottom Sheet Integration
+
+```typescript
+function MapWithBottomSheet() {
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const bottomSheetRef = useRef(null);
+
+  const handleMarkerPress = useCallback((marker) => {
+    setSelectedMarker(marker);
+    bottomSheetRef.current?.expand();
+  }, []);
+
+  return (
+    <View style={{ flex: 1 }}>
+      <MapView>
+        {markers.map((marker) => (
+          <MarkerView
+            key={marker.id}
+            coordinate={marker.coordinate}
+            onPress={() => handleMarkerPress(marker)}
+          />
+        ))}
+      </MapView>
+      <BottomSheet ref={bottomSheetRef}>
+        {selectedMarker && <MarkerDetails marker={selectedMarker} />}
+      </BottomSheet>
+    </View>
+  );
+}
+```
+
 # 📚 API Reference - React Native Barikoi Maps
 
 > For a high-level overview, see the [**README.md**](../README.md). For implementation details and best practices, refer to the [**DEVELOPER_GUIDE.md**](./DEVELOPER_GUIDE.md).

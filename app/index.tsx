@@ -1,4 +1,3 @@
-// import SimpleMapScreen from '../components/screens/SimpleMapScreen';
-import ImprovedMapScreen from '../components/screens/ImprovedMapScreen';
+import SimpleMapScreen from '../components/screens/SimpleMapScreen';
 
-export default ImprovedMapScreen; 
+export default SimpleMapScreen; 

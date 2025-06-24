@@ -1,6 +1,6 @@
 import { Camera, MapView, MarkerView } from '@maplibre/maplibre-react-native';
-import React, { useState } from "react";
-import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useRef, useState } from "react";
+import { ActivityIndicator, Animated, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { BARIKOI_COLORS, useBarikoiMapStyle } from '../../utils/mapUtils';
 
 // Define marker data
@@ -40,6 +40,28 @@ const markers = [
 export default function MarkerScreen() {
     const { styleJson, loading, error } = useBarikoiMapStyle();
     const [selectedMarker, setSelectedMarker] = useState<string | null>(null);
+    const bottomSheetAnim = useRef(new Animated.Value(0)).current;
+
+    const showBottomSheet = useCallback(() => {
+        Animated.spring(bottomSheetAnim, {
+            toValue: 1,
+            useNativeDriver: true,
+        }).start();
+    }, [bottomSheetAnim]);
+
+    const hideBottomSheet = useCallback(() => {
+        Animated.spring(bottomSheetAnim, {
+            toValue: 0,
+            useNativeDriver: true,
+        }).start();
+        setSelectedMarker(null);
+    }, [bottomSheetAnim]);
+
+    const handleMarkerPress = useCallback((markerId: string) => {
+        console.log('markerId', markerId);
+        setSelectedMarker(markerId);
+        showBottomSheet();
+    }, [showBottomSheet]);
 
     if (loading) {
         return (
@@ -59,6 +81,8 @@ export default function MarkerScreen() {
         );
     }
 
+    const selectedMarkerData = markers.find(m => m.id === selectedMarker);
+
     return (
         <View style={styles.container}>
             <MapView
@@ -69,7 +93,7 @@ export default function MarkerScreen() {
                 mapStyle={styleJson}
             >
                 <Camera
-                    centerCoordinate={[90.389709, 23.824577]} // Centered between markers
+                    centerCoordinate={[90.389709, 23.824577]}
                     zoomLevel={11.5}
                     animationDuration={1000}
                     animationMode="linearTo"
@@ -80,7 +104,7 @@ export default function MarkerScreen() {
                         coordinate={marker.coordinate}
                         anchor={{ x: 0.5, y: 1.0 }}
                     >
-                        <Pressable onPress={() => setSelectedMarker(marker.id)}>
+                        <Pressable onPress={() => handleMarkerPress(marker.id)}>
                             <View style={styles.markerContainer}>
                                 <Image
                                     source={require('../../assets/icons/barikoi_icon.png')}
@@ -90,17 +114,55 @@ export default function MarkerScreen() {
                                     ]}
                                     resizeMode="contain"
                                 />
-                                {selectedMarker === marker.id && (
-                                    <View style={styles.markerInfo}>
-                                        <Text style={styles.markerTitle}>{marker.title}</Text>
-                                        <Text style={styles.markerDescription}>{marker.description}</Text>
-                                    </View>
-                                )}
                             </View>
                         </Pressable>
                     </MarkerView>
                 ))}
             </MapView>
+
+            {/* Bottom Sheet */}
+            <Animated.View
+                style={[
+                    styles.bottomSheet,
+                    {
+                        transform: [{
+                            translateY: bottomSheetAnim.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [200, 0]
+                            })
+                        }]
+                    }
+                ]}
+            >
+                {selectedMarkerData && (
+                    <View style={styles.bottomSheetContent}>
+                        <View style={styles.bottomSheetHeader}>
+                            <View style={styles.titleContainer}>
+                                <Text style={styles.bottomSheetTitle}>{selectedMarkerData.title}</Text>
+                                <Text style={styles.bottomSheetDescription}>{selectedMarkerData.description}</Text>
+                            </View>
+                            <Pressable onPress={hideBottomSheet} style={styles.closeButton}>
+                                <Text style={styles.closeButtonText}>×</Text>
+                            </Pressable>
+                        </View>
+                        <View style={styles.coordinateContainer}>
+                            <View style={styles.coordinateItem}>
+                                <Text style={styles.coordinateLabel}>Latitude</Text>
+                                <Text style={styles.coordinateValue}>
+                                    {selectedMarkerData.coordinate[1].toFixed(6)}°
+                                </Text>
+                            </View>
+                            <View style={styles.divider} />
+                            <View style={styles.coordinateItem}>
+                                <Text style={styles.coordinateLabel}>Longitude</Text>
+                                <Text style={styles.coordinateValue}>
+                                    {selectedMarkerData.coordinate[0].toFixed(6)}°
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+                )}
+            </Animated.View>
         </View>
     );
 }
@@ -156,31 +218,100 @@ const styles = StyleSheet.create({
         height: 45,
         tintColor: BARIKOI_COLORS.primary,
     },
-    markerInfo: {
+    bottomSheet: {
         position: 'absolute',
-        bottom: 45,
+        bottom: 0,
+        left: 0,
+        right: 0,
         backgroundColor: 'white',
-        padding: 8,
-        borderRadius: 8,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
-            height: 2,
+            height: -2,
         },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
-        minWidth: 120,
+        paddingBottom: 20,
     },
-    markerTitle: {
+    bottomSheetContent: {
+        padding: 16,
+    },
+    bottomSheetHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        marginBottom: 16,
+    },
+    titleContainer: {
+        flex: 1,
+        marginRight: 16,
+    },
+    headerButtons: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    selectButton: {
+        backgroundColor: BARIKOI_COLORS.primary,
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 8,
+        marginRight: 8,
+    },
+    selectButtonText: {
+        color: 'white',
         fontSize: 14,
+        fontWeight: '500',
+    },
+    bottomSheetTitle: {
+        fontSize: 18,
         fontWeight: 'bold',
         color: BARIKOI_COLORS.text,
-        marginBottom: 2,
+        marginBottom: 4,
     },
-    markerDescription: {
+    bottomSheetDescription: {
+        fontSize: 14,
+        color: BARIKOI_COLORS.text,
+        opacity: 0.7,
+    },
+    closeButton: {
+        width: 30,
+        height: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 15,
+        backgroundColor: BARIKOI_COLORS.background,
+    },
+    closeButtonText: {
+        fontSize: 20,
+        color: BARIKOI_COLORS.text,
+        lineHeight: 20,
+    },
+    coordinateContainer: {
+        backgroundColor: BARIKOI_COLORS.background,
+        borderRadius: 12,
+        padding: 16,
+        marginTop: 8,
+    },
+    coordinateItem: {
+        marginBottom: 8,
+    },
+    coordinateLabel: {
         fontSize: 12,
         color: BARIKOI_COLORS.text,
         opacity: 0.7,
+        marginBottom: 4,
+    },
+    coordinateValue: {
+        fontSize: 16,
+        color: BARIKOI_COLORS.text,
+        fontWeight: '500',
+    },
+    divider: {
+        height: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+        marginVertical: 8,
     },
 }); 
