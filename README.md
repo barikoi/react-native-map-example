@@ -46,6 +46,8 @@ This project includes comprehensive documentation to help you get started and bu
 
 ### Development Environment Setup ([Check Official Docs](https://docs.expo.dev/get-started/set-up-your-environment/))
 
+> **⚠️ Important**: This project uses `@maplibre/maplibre-react-native` which requires specific Expo configuration. Make sure to follow the [MapLibre Expo Setup Guide](https://maplibre.org/maplibre-react-native/docs/setup/expo) to verify your configuration is correct.
+
 #### For iOS (macOS only)
 
 1. Install Xcode from the Mac App Store
@@ -272,6 +274,7 @@ Contributions are welcome! For major changes, please open an issue first to disc
    - Check if your API key is correctly set in `utils/mapUtils.ts`
    - Ensure you have an active internet connection
    - Verify that the Barikoi servers are accessible
+   - **Verify MapLibre configuration**: Follow the [MapLibre Expo Setup Guide](https://maplibre.org/maplibre-react-native/docs/setup/expo) to ensure your `app.json` has the correct plugin configuration
 
 2. **Location permission issues**
 
@@ -291,9 +294,12 @@ Contributions are welcome! For major changes, please open an issue first to disc
      ```
 
    - Clear Metro bundler cache:
+
      ```bash
      npm start -- --reset-cache
      ```
+
+   - **Check MapLibre plugin**: Ensure the `@maplibre/maplibre-react-native` plugin is properly configured in your `app.json` as per the [MapLibre Expo Setup Guide](https://maplibre.org/maplibre-react-native/docs/setup/expo)
 
 4. **Marker/Shape rendering issues**
    - Ensure coordinates are in the correct format [longitude, latitude]
