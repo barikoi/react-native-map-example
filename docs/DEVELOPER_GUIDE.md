@@ -51,7 +51,7 @@ export const useBarikoiMapStyle = () => {
   const fetchStyle = async () => {
     try {
       const response = await fetch(
-        `https://map.barikoi.com/styles/barikoi/style.json?key=${BARIKOI_API_KEY}`
+        `https://map.barikoi.com/styles/osm_barikoi_v2/style.json?key=${BARIKOI_API_KEY}`
       );
       const json = await response.json();
       setStyleJson(json);

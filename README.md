@@ -16,7 +16,6 @@ This project includes comprehensive documentation to help you get started and bu
 
 - **[README.md](./README.md)**: You are here! Project overview and quick start guide.
 - **[DEVELOPER_GUIDE.md](./docs/DEVELOPER_GUIDE.md)**: A deep dive into the project structure, components, and advanced concepts.
-- **[API_REFERENCE.md](./docs/API_REFERENCE.md)**: Detailed reference for all utility functions, components, and the Barikoi API.
 
 ## 📱 Features
 
@@ -45,7 +44,7 @@ This project includes comprehensive documentation to help you get started and bu
 - Xcode (for iOS development, macOS only)
 - A Barikoi API Key ([Get one here](https://barikoi.com))
 
-### Development Environment Setup
+### Development Environment Setup ([Check Official Docs](https://docs.expo.dev/get-started/set-up-your-environment/))
 
 #### For iOS (macOS only)
 
@@ -208,7 +207,7 @@ A custom hook, `useBarikoiMapStyle`, fetches and prepares the map style from Bar
 // utils/mapUtils.ts
 useEffect(() => {
   fetch(
-    "https://map.barikoi.com/styles/osm_barikoi_v2/style.json?key=YOUR_API_KEY"
+    `https://map.barikoi.com/styles/osm_barikoi_v2/style.json?key=${BARIKOI_API_KEY}`
   )
     .then((response) => response.json())
     .then((data) => {
