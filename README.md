@@ -1,6 +1,6 @@
-# 🗺️ React Native Map App with Barikoi Maps
+# 🗺️ React Native (Expo) Map App with Barikoi Maps
 
-A comprehensive React Native application demonstrating various map features using **Barikoi Maps**, Bangladesh's leading mapping service, integrated with **@maplibre/maplibre-react-native**. This project serves as a complete example for the React Native community.
+A comprehensive React Native (Expo) application demonstrating various map features using **Barikoi Maps**, Bangladesh's leading mapping service, integrated with **@maplibre/maplibre-react-native**. This project serves as a complete example for the React Native community.
 
 ## 🔑 IMPORTANT: Get Your API Key First!
 

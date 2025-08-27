@@ -1,6 +1,6 @@
-# 🗺️ React Native Barikoi Maps - Developer Guide
+# 🗺️ React Native (Expo) Barikoi Maps - Developer Guide
 
-Welcome to the React Native Barikoi Maps Developer Guide! This guide will help you integrate Barikoi Maps into your React Native application with ease.
+Welcome to the React Native (Expo) Barikoi Maps Developer Guide! This guide will help you integrate Barikoi Maps into your React Native (Expo) application with ease.
 
 ## 📱 Quick Start
 
