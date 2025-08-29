@@ -1,19 +1,13 @@
-/**
- * Utility functions for Barikoi Maps integration
- * Centralized map style loading and configuration
- */
 
-// Re-export useState and useEffect for convenience
-import Constants from 'expo-constants';
 import { useEffect, useState } from 'react';
-const BARIKOI_API_KEY = Constants.expoConfig?.extra?.barikoiApiKey || '';
+const BARIKOI_API_KEY = 'REPLACE_WITH_YOUR_BARIKOI_API_KEY';
 
 /**
  * Fetches Barikoi map style JSON
  * @param apiKey - Your Barikoi API key (optional, uses default if not provided)
  * @returns Promise<any> - Map style JSON object
  */
-export const fetchBarikoiMapStyle = async (apiKey: string = BARIKOI_API_KEY || ''): Promise<any> => {
+export const fetchBarikoiMapStyle = async (apiKey: string): Promise<any> => {
     try {
         const response = await fetch(
             `https://map.barikoi.com/styles/osm_barikoi_v2/style.json?key=${apiKey}`
@@ -52,7 +46,7 @@ export const useBarikoiMapStyle = (apiKey?: string) => {
             try {
                 setLoading(true);
                 setError(null);
-                const style = await fetchBarikoiMapStyle(apiKey);
+                const style = await fetchBarikoiMapStyle(BARIKOI_API_KEY);
                 setStyleJson(style);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to load map style');
