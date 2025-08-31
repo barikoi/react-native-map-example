@@ -5,7 +5,8 @@ A comprehensive React Native (Expo) application demonstrating various map featur
 ## 🔑 IMPORTANT: Get Your API Key First!
 
 ⚠️ **Before running this project, you MUST:**
-1. Visit [barikoi.com](https://barikoi.com) and create a **free account**
+
+1. Visit [https://developer.barikoi.com/account](https://developer.barikoi.com/account) and create a **free account**
 2. Get your API key from the dashboard
 3. Replace `YOUR_API_KEY_HERE` in `utils/mapUtils.ts`
 
@@ -51,15 +52,16 @@ This project includes comprehensive documentation to help you get started and bu
 - **Expo CLI**: `npm install -g @expo/cli`
 - **A code editor** (VS Code recommended)
 - **Android Studio** (for Android development) OR **Xcode** (for iOS development, macOS only)
-- **Barikoi API Key** (Free registration at [barikoi.com](https://barikoi.com))
+- **Barikoi API Key** (Free registration at [https://developer.barikoi.com](https://developer.barikoi.com/))
 
 ### Step-by-Step Setup for Beginners
 
 #### 1. Clone and Install Dependencies
+
 ```bash
 # Clone the repository
-git clone https://github.com/iazadur/expo-map-app.git
-cd expo-map-app
+git clone https://github.com/barikoi/react-native-map-example.git
+cd react-native-map-example
 
 # Install all dependencies
 npm install
@@ -69,19 +71,24 @@ cd ios && pod install && cd ..
 ```
 
 #### 2. Add Your API Key (CRITICAL STEP!)
-1. Go to [barikoi.com](https://barikoi.com) and create an account
+
+1. Go to [https://developer.barikoi.com](https://developer.barikoi.com) and create an account
 2. Get your API key from the dashboard
 3. Open `utils/mapUtils.ts` in your code editor
 4. Replace this line:
+
 ```typescript
 const BARIKOI_API_KEY = "YOUR_API_KEY_HERE";
 ```
+
 With your actual key:
+
 ```typescript
 const BARIKOI_API_KEY = "bkoi_xxxxxxxxxxxxx"; // Your actual key here
 ```
 
 #### 3. Run the Project
+
 ```bash
 # Start development server
 npm start
@@ -93,6 +100,7 @@ npm run ios      # For iOS (Mac only)
 ```
 
 #### 4. Test on Your Device
+
 - Install **Expo Go** app on your phone
 - Scan the QR code from terminal
 - Grant location permissions when prompted
@@ -135,28 +143,36 @@ After installation, verify everything works:
 ## 🚨 Common Beginner Mistakes & Solutions
 
 ### ❌ "Map is blank/not loading"
+
 **Solutions:**
+
 - ✅ Check if you added your API key correctly in `utils/mapUtils.ts`
 - ✅ Make sure you're connected to internet
 - ✅ Verify the API key is active on Barikoi dashboard
 - ✅ Check browser console for error messages
 
 ### ❌ "App crashes on startup"
+
 **Solutions:**
+
 - ✅ Run `npm install` again
 - ✅ Clear Metro cache: `npm start -- --clear`
 - ✅ Make sure you have Node.js v18+ installed
 - ✅ For iOS: `cd ios && pod install && cd ..`
 
 ### ❌ "Location not working"
+
 **Solutions:**
+
 - ✅ Test on a real device (not simulator for best results)
 - ✅ Allow location permissions when prompted
 - ✅ Make sure location services are enabled on your device
 - ✅ Check if GPS is working in other apps
 
 ### ❌ "Build errors with MapLibre"
+
 **Solutions:**
+
 - ✅ Follow the [MapLibre Expo Setup Guide](https://maplibre.org/maplibre-react-native/docs/setup/expo)
 - ✅ Ensure your `app.json` has the correct plugin configuration
 - ✅ Run `npx expo install --fix` to fix version conflicts
@@ -164,38 +180,41 @@ After installation, verify everything works:
 ## 🖼️ Screenshots & Demo
 
 ### Core Features
+
 ![Simple Map](./assets/screenshorts/simple-map.jpg)
-*Basic map display with Barikoi styling*
+_Basic map display with Barikoi styling_
 
 ![Current Location](./assets/screenshorts/current-location.jpg)
-*Real-time location tracking*
+_Real-time location tracking_
 
 ![Custom Markers](./assets/screenshorts/markar.jpg)
-*Interactive custom markers*
+_Interactive custom markers_
 
 ### Advanced Features
+
 ![Line Drawing](./assets/screenshorts/line.jpg)
-*Draw lines between coordinates*
+_Draw lines between coordinates_
 
 ![Polygon Shapes](./assets/screenshorts/polygon.jpg)
-*Create polygon areas*
+_Create polygon areas_
 
 ![Complex Geometry](./assets/screenshorts/geometry.jpg)
-*Multiple geometric shapes*
+_Multiple geometric shapes_
 
 ![Advanced Map](./assets/screenshorts/advanced-map.jpg)
-*Advanced map with multiple features*
+_Advanced map with multiple features_
 
 ## 🏗️ How It Works (Quick Overview)
 
 ### Basic Map Setup
+
 ```typescript
 import { Camera, MapView, MarkerView } from "@maplibre/maplibre-react-native";
 import { useBarikoiMapStyle } from "../../utils/mapUtils";
 
 export default function SimpleMapScreen() {
   const { styleJson, loading, error } = useBarikoiMapStyle();
-  
+
   if (loading) return <ActivityIndicator />;
   if (error) return <Text>Error: {error}</Text>;
 
@@ -211,6 +230,7 @@ export default function SimpleMapScreen() {
 ```
 
 ### Adding Markers
+
 ```typescript
 <MarkerView coordinate={[90.364159, 23.823724]}>
   <Image source={require("../assets/icons/barikoi_icon.png")} />
@@ -218,6 +238,7 @@ export default function SimpleMapScreen() {
 ```
 
 ### Location Tracking
+
 ```typescript
 import * as Location from "expo-location";
 
@@ -253,21 +274,23 @@ A: Yes, this code follows React Native best practices and is suitable for produc
 ### Adding a New Map Feature
 
 1. **Create a new screen file**:
+
    ```bash
    touch components/screens/YourNewScreen.tsx
    ```
 
 2. **Implement the component**:
+
    ```typescript
    import { MapView, Camera } from "@maplibre/maplibre-react-native";
    import { useBarikoiMapStyle } from "../../utils/mapUtils";
 
    export default function YourNewScreen() {
      const { styleJson, loading, error } = useBarikoiMapStyle();
-     
+
      if (loading) return <ActivityIndicator />;
      if (error) return <Text>Error: {error}</Text>;
-     
+
      return (
        <MapView mapStyle={styleJson}>
          {/* Your custom map features go here */}
@@ -293,11 +316,12 @@ eas login
 # Build for Android
 eas build --platform android --profile production
 
-# Build for iOS  
+# Build for iOS
 eas build --platform ios --profile production
 ```
 
 ### For Google Play Store:
+
 1. **Create Google Play Developer account** ($25 one-time fee)
 2. **Build your app**: `eas build --platform android --profile production`
 3. **Download APK/AAB** from Expo dashboard
@@ -306,6 +330,7 @@ eas build --platform ios --profile production
 6. **Submit for review** (usually takes 1-3 days)
 
 ### For Apple App Store:
+
 1. **Apple Developer account required** ($99/year)
 2. **Build your app**: `eas build --platform ios --profile production`
 3. **Download IPA** from Expo dashboard
@@ -337,31 +362,37 @@ This project includes a basic `eas.json` configuration:
 ### Common Issues & Solutions
 
 1. **Map not displaying**
+
    - ✅ Check if your API key is correctly set in `utils/mapUtils.ts`
    - ✅ Ensure you have an active internet connection
    - ✅ Verify that the Barikoi servers are accessible
    - ✅ Check browser console for network errors
 
 2. **Location permission issues**
+
    - ✅ For Android: Check if location permissions are granted in app settings
    - ✅ For iOS: Verify location permissions in Settings > Privacy > Location Services
    - ✅ Test on real device rather than simulator
 
 3. **Build errors**
+
    - ✅ Clean the build cache:
+
      ```bash
      # Clear Metro cache
      npm start -- --reset-cache
-     
+
      # For Android
      cd android && ./gradlew clean && cd ..
-     
+
      # For iOS
      cd ios && pod deintegrate && pod install && cd ..
      ```
+
    - ✅ **Check MapLibre plugin**: Ensure proper configuration in `app.json`
 
 4. **Marker/Shape rendering issues**
+
    - ✅ Ensure coordinates are in correct format [longitude, latitude]
    - ✅ Check if coordinates are within Bangladesh bounds
    - ✅ Verify GeoJSON structure for complex shapes
@@ -406,6 +437,7 @@ For major changes, please open an issue first to discuss what you would like to 
 ## 🎉 What's Next?
 
 Once you have the basic app running, you can:
+
 - Add search functionality with Barikoi Places API
 - Implement route planning with Barikoi Route API
 - Add real-time traffic data
