@@ -6,8 +6,8 @@ A comprehensive React Native (Expo) application demonstrating various map featur
 
 ⚠️ **Before running this project, you MUST:**
 
-1. Visit [https://developer.barikoi.com/account](https://developer.barikoi.com/account) and create a **free account**
-2. Get your API key from the dashboard
+1. Visit [https://developer.barikoi.com](https://developer.barikoi.com) and create an **account**
+2. Get your API key from the dashboard -> account -> API Key
 3. Replace `YOUR_API_KEY_HERE` in `utils/mapUtils.ts`
 
 ❌ **The app will NOT work without a valid API key!**
@@ -72,10 +72,9 @@ cd ios && pod install && cd ..
 
 #### 2. Add Your API Key (CRITICAL STEP!)
 
-1. Go to [https://developer.barikoi.com](https://developer.barikoi.com) and create an account
-2. Get your API key from the dashboard
-3. Open `utils/mapUtils.ts` in your code editor
-4. Replace this line:
+1. Get your API key from the [dashboard](https://developer.barikoi.com/dashboard) -> [account](https://developer.barikoi.com/account) -> API Key
+2. Open `utils/mapUtils.ts` in your code editor
+3. Replace this line:
 
 ```typescript
 const BARIKOI_API_KEY = "YOUR_API_KEY_HERE";
@@ -105,7 +104,7 @@ npm run ios      # For iOS (Mac only)
 - Scan the QR code from terminal
 - Grant location permissions when prompted
 
-### Development Environment Setup
+## Development Environment Setup
 
 > **⚠️ Important**: This project uses `@maplibre/maplibre-react-native` which requires specific Expo configuration. Make sure to follow the [MapLibre Expo Setup Guide](https://maplibre.org/maplibre-react-native/docs/setup/expo) to verify your configuration is correct.
 
