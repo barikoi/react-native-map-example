@@ -89,24 +89,26 @@ const BARIKOI_API_KEY = "bkoi_xxxxxxxxxxxxx"; // Your actual key here
 #### 3. Run the Project
 
 ```bash
-# Start development server
-npm start
+# Option 1: Start development server with Expo
+npm start  # Launches Metro bundler - scan the QR code with Expo Go app to run
 
-# In another terminal, run on your device/simulator
-npm run android  # For Android
-# OR
-npm run ios      # For iOS (Mac only)
+# Option 2: Run on Android emulator (Recommanded)
+npm run android  # Starts app on connected Android emulator (requires Android Studio)
+
+# Option 3: Run on iOS simulator (macOS only)
+npm run ios      # Starts app on iOS simulator (requires Xcode)
 ```
-
-#### 4. Test on Your Device
-
-- Install **Expo Go** app on your phone
-- Scan the QR code from terminal
-- Grant location permissions when prompted
 
 ## Development Environment Setup
 
 > **⚠️ Important**: This project uses `@maplibre/maplibre-react-native` which requires specific Expo configuration. Make sure to follow the [MapLibre Expo Setup Guide](https://maplibre.org/maplibre-react-native/docs/setup/expo) to verify your configuration is correct.
+
+#### For Android
+
+1. Install Android Studio
+2. Install Android SDK (minimum SDK 21)
+3. Set up Android environment variables (ANDROID_HOME)
+4. Create an Android Virtual Device (AVD)
 
 #### For iOS (macOS only)
 
@@ -120,26 +122,16 @@ npm run ios      # For iOS (Mac only)
    sudo gem install cocoapods
    ```
 
-#### For Android
-
-1. Install Android Studio
-2. Install Android SDK (minimum SDK 21)
-3. Set up Android environment variables (ANDROID_HOME)
-4. Create an Android Virtual Device (AVD)
-
-## 🧪 Testing Your Setup
-
-After installation, verify everything works:
-
-1. **Start the app**: `npm start`
-2. **Check the console**: Should show "Metro waiting on exp://..."
-3. **Open on device**: Scan QR code with Expo Go app
-4. **Test basic map**: Should see a map of Dhaka loading within 5-10 seconds
-5. **Test location**: Grant permission and check if current location shows
-
-✅ **If all steps work, you're ready to build amazing maps!**
-
 ## 🚨 Common Beginner Mistakes & Solutions
+
+### ❌ "Connectivity Issues"
+
+**Solutions:**
+
+- ✅ For testing with Expo Go app, ensure both your computer and mobile device are on the same network
+- ✅ Check if your network allows local device communication (some corporate networks block this)
+- ✅ Try switching between WiFi and mobile data if connection issues persist
+- ✅ Verify your development machine's firewall isn't blocking Expo connections
 
 ### ❌ "Map is blank/not loading"
 
@@ -180,28 +172,41 @@ After installation, verify everything works:
 
 ### Core Features
 
-![Simple Map](./assets/screenshorts/simple-map.jpg)
-_Basic map display with Barikoi styling_
-
-![Current Location](./assets/screenshorts/current-location.jpg)
-_Real-time location tracking_
-
-![Custom Markers](./assets/screenshorts/markar.jpg)
-_Interactive custom markers_
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 20px 0;">
+  <div>
+    <img src="./assets/screenshorts/simple-map.jpg" width="100%" alt="Basic map display with Barikoi styling">
+    <p style="text-align: center;"><em>Basic map display</em></p>
+  </div>
+  <div>
+    <img src="./assets/screenshorts/current-location.jpg" width="100%" alt="Real-time location tracking">
+    <p style="text-align: center;"><em>Location tracking</em></p>
+  </div>
+  <div>
+    <img src="./assets/screenshorts/markar.jpg" width="100%" alt="Interactive custom markers">
+    <p style="text-align: center;"><em>Custom markers</em></p>
+  </div>
+</div>
 
 ### Advanced Features
 
-![Line Drawing](./assets/screenshorts/line.jpg)
-_Draw lines between coordinates_
-
-![Polygon Shapes](./assets/screenshorts/polygon.jpg)
-_Create polygon areas_
-
-![Complex Geometry](./assets/screenshorts/geometry.jpg)
-_Multiple geometric shapes_
-
-![Advanced Map](./assets/screenshorts/advanced-map.jpg)
-_Advanced map with multiple features_
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 20px 0;">
+  <div>
+    <img src="./assets/screenshorts/line.jpg" width="100%" alt="Draw lines between coordinates">
+    <p style="text-align: center;"><em>Draw lines between coordinates</em></p>
+  </div>
+  <div>
+    <img src="./assets/screenshorts/polygon.jpg" width="100%" alt="Create polygon areas">
+    <p style="text-align: center;"><em>Create polygon areas</em></p>
+  </div>
+  <div>
+    <img src="./assets/screenshorts/geometry.jpg" width="100%" alt="Multiple geometric shapes">
+    <p style="text-align: center;"><em>Multiple geometric shapes</em></p>
+  </div>
+  <div>
+    <img src="./assets/screenshorts/advanced-map.jpg" width="100%" alt="Advanced map with multiple features">
+    <p style="text-align: center;"><em>Advanced map with multiple features</em></p>
+  </div>
+</div>
 
 ## 🏗️ How It Works (Quick Overview)
 
@@ -405,10 +410,9 @@ This project includes a basic `eas.json` configuration:
 
 ### Getting Help
 
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/iazadur/expo-map-app/issues)
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/barikoi/react-native-map-example/issues)
 - 📧 **Barikoi Support**: support@barikoi.com
 - 📖 **Documentation**: [docs.barikoi.com](https://docs.barikoi.com)
-- 💬 **Community**: Join our Discord/Telegram for quick help
 
 ## 📄 License
 
