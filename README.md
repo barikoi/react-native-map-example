@@ -170,7 +170,7 @@ npm run ios      # Starts app on iOS simulator (requires Xcode)
 
 ## 🖼️ Screenshots & Demo
 
-### Core Features
+<!-- ### Core Features
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 20px 0;">
   <div>
@@ -206,7 +206,54 @@ npm run ios      # Starts app on iOS simulator (requires Xcode)
     <img src="./assets/screenshorts/advanced-map.jpg" width="100%" alt="Advanced map with multiple features">
     <p style="text-align: center;"><em>Advanced map with multiple features</em></p>
   </div>
-</div>
+</div> -->
+
+### Core Features
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="./assets/screenshorts/simple-map.jpg" alt="Basic map display with Barikoi styling" width="100%"><br>
+      <em>Basic map display</em>
+    </td>
+    <td align="center" width="50%">
+      <img src="./assets/screenshorts/current-location.jpg" alt="Real-time location tracking" width="100%"><br>
+      <em>Location tracking</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="./assets/screenshorts/markar.jpg" alt="Interactive custom markers" width="100%"><br>
+      <em>Custom markers</em>
+    </td>
+    <td></td>
+  </tr>
+</table>
+
+### Advanced Features
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="./assets/screenshorts/line.jpg" alt="Draw lines between coordinates" width="100%"><br>
+      <em>Draw lines between coordinates</em>
+    </td>
+    <td align="center" width="50%">
+      <img src="./assets/screenshorts/polygon.jpg" alt="Create polygon areas" width="100%"><br>
+      <em>Create polygon areas</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="./assets/screenshorts/geometry.jpg" alt="Multiple geometric shapes" width="100%"><br>
+      <em>Multiple geometric shapes</em>
+    </td>
+    <td align="center" width="50%">
+      <img src="./assets/screenshorts/advanced-map.jpg" alt="Advanced map with multiple features" width="100%"><br>
+      <em>Advanced map with multiple features</em>
+    </td>
+  </tr>
+</table>
 
 ## 🏗️ How It Works (Quick Overview)
 
