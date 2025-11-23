@@ -157,7 +157,7 @@ export default FlameIcon;
 
 Create the main screen component that handles all the draggable marker logic.
 
-**File: `components/screens/DraggableMarkerScreen.tsx`**
+**File: [components/screens/DraggableMarkerScreen.tsx](https://github.com/barikoi/react-native-map-example/blob/main/components/screens/DraggableMarkerScreen.tsx)**
 
 The complete implementation includes:
 
