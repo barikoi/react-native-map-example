@@ -439,6 +439,33 @@ const formatCoordinate = (value: number) => {
 };
 ```
 
+### Utils functions
+
+- `extractCoordinate`: Extract coordinate from drag payload
+- `extractFromGeometry`: Extract coordinate from geometry
+
+```tsx
+// Extract coordinate from drag payload
+    const extractCoordinate = useCallback((payload: DragFeature): [number, number] => {
+        return toLngLatTuple(payload.geometry.coordinates as number[], markerCoordinate);
+    }, [toLngLatTuple, markerCoordinate]);
+
+// Extract coordinate from geometry
+    const extractFromGeometry = useCallback((feature: Feature<Geometry>): [number, number] | null => {
+        if (!feature.geometry) return null;
+
+        if (feature.geometry.type === 'Point') {
+            return toLngLatTuple(feature.geometry.coordinates as number[], markerCoordinate);
+        }
+
+        if (feature.geometry.type === 'MultiPoint' && feature.geometry.coordinates.length > 0) {
+            return toLngLatTuple(feature.geometry.coordinates[0] as number[], markerCoordinate);
+        }
+
+        return null;
+    }, [toLngLatTuple, markerCoordinate]);
+```
+
 ### Modify Info Panel Style
 
 Update the `infoPanel` style in the StyleSheet:
