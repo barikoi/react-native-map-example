@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-const BARIKOI_API_KEY = 'REPLACE_WITH_YOUR_BARIKOI_API_KEY';
+const BARIKOI_API_KEY = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
 
 /**
  * Fetches Barikoi map style JSON
@@ -20,9 +20,9 @@ export const fetchBarikoiMapStyle = async (apiKey: string): Promise<any> => {
         const data = await response.json();
 
         // Remove sprite property for React Native compatibility
-        if (data.sprite) {
-            delete data.sprite;
-        }
+        // if (data.sprite) {
+        //     delete data.sprite;
+        // }
 
         return data;
     } catch (error) {

@@ -72,6 +72,14 @@ export default function RootLayout() {
             }}
           />
           <Drawer.Screen
+            name="draggable-marker"
+            options={{
+              drawerLabel: 'Drag & Drop Marker',
+              drawerIcon: () => <Text style={{ fontSize: 20 }}>🪄</Text>,
+              title: 'Drag & Drop Marker',
+            }}
+          />
+          <Drawer.Screen
             name="line"
             options={{
               drawerLabel: 'Line',
