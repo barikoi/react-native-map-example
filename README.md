@@ -88,15 +88,44 @@ const BARIKOI_API_KEY = "bkoi_xxxxxxxxxxxxx"; // Your actual key here
 
 #### 3. Run the Project
 
+> **Important**: This project uses `@maplibre/maplibre-react-native`, which contains native code (C++/Java/Swift). It **cannot run in Expo Go**. You must use a **development build** instead. Choose one of the options below.
+
+**Option A: Run on a physical device with EAS Build (Recommended)**
+
+This builds a development APK in the cloud and gives you a download link to install on your phone.
+
 ```bash
-# Option 1: Start development server with Expo
-npm start # Launches Metro bundler - scan the QR code with Expo Go app to run
+# 1. Install EAS CLI (one-time)
+npm install -g @expo/eas-cli
 
-# Option 2: Run on Android emulator (Recommended)
-npm run android # Starts app on connected Android emulator (requires Android Studio)
+# 2. Log in to your Expo account
+eas login
 
-# Option 3: Run on iOS simulator (macOS only)
-npm run ios # Starts app on iOS simulator (requires Xcode)
+# 3. Build a development APK for Android
+eas build --profile development --platform android
+
+# 4. Install the APK on your device (download link provided after build completes)
+# 5. Start the dev server
+npm start
+```
+
+For iOS:
+```bash
+eas build --profile development --platform ios
+```
+
+**Option B: Run on an Android emulator (requires Android Studio)**
+
+```bash
+npm run android
+# This generates native code, builds, and installs on a connected emulator
+```
+
+**Option C: Run on an iOS simulator (macOS only, requires Xcode)**
+
+```bash
+npm run ios
+# This generates native code, builds, and installs on a connected simulator
 ```
 
 ## Development Environment Setup
@@ -124,11 +153,17 @@ sudo gem install cocoapods
 
 ## Common Beginner Mistakes & Solutions
 
+### "Native module not registered" / "Library not registered properly"
+
+This happens if you try to open the project with Expo Go. **This project cannot run in Expo Go** because `@maplibre/maplibre-react-native` requires native code compilation.
+
+**Solution:** Use a development build instead. See [Step 3: Run the Project](#3-run-the-project) above for options.
+
 ### "Connectivity Issues"
 
 **Solutions:**
 
-- For testing with Expo Go app, ensure both your computer and mobile device are on the same network
+- If using a development build on a physical device, ensure both your computer and device are on the same network
 - Check if your network allows local device communication (some corporate networks block this)
 - Try switching between WiFi and mobile data if connection issues persist
 - Verify your development machine's firewall isn't blocking Expo connections
