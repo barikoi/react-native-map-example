@@ -36,14 +36,14 @@ This implementation uses MapLibre GL for React Native, which provides native map
 
 ### Core Functionality
 
-- ✅ Draggable marker with smooth animations
-- ✅ Tap-to-place marker on map press
-- ✅ Real-time coordinate display (formatted to 6 decimal places)
-- ✅ Zoom controls (+/- buttons)
-- ✅ Compass reset button (appears when map is rotated)
-- ✅ Custom SVG marker icon
-- ✅ Loading and error states
-- ✅ Platform-specific styling (iOS/Android)
+- Draggable marker with smooth animations
+- Tap-to-place marker on map press
+- Real-time coordinate display (formatted to 6 decimal places)
+- Zoom controls (+/- buttons)
+- Compass reset button (appears when map is rotated)
+- Custom SVG marker icon
+- Loading and error states
+- Platform-specific styling (iOS/Android)
 
 ### User Experience
 
@@ -58,12 +58,12 @@ This implementation uses MapLibre GL for React Native, which provides native map
 
 Before integrating the draggable marker, ensure you have:
 
-| Requirement      | Version | Notes                                 |
+| Requirement | Version | Notes |
 | ---------------- | ------- | ------------------------------------- |
-| **React Native** | 0.70+   | Required for MapLibre compatibility   |
-| **Expo SDK**     | 50+     | If using Expo (optional)              |
-| **Node.js**      | 16+     | For package management                |
-| **TypeScript**   | 4.5+    | Recommended (project uses TypeScript) |
+| **React Native** | 0.70+ | Required for MapLibre compatibility |
+| **Expo SDK** | 50+ | If using Expo (optional) |
+| **Node.js** | 16+ | For package management |
+| **TypeScript** | 4.5+ | Recommended (project uses TypeScript) |
 
 ### Required Packages
 
@@ -71,9 +71,9 @@ The following packages are needed for this feature:
 
 ```json
 {
-  "@maplibre/maplibre-react-native": "^10.1.6",
-  "react-native-svg": "^15.12.0",
-  "@expo/vector-icons": "^14.1.0"
+"@maplibre/maplibre-react-native": "^10.1.6",
+"react-native-svg": "^15.12.0",
+"@expo/vector-icons": "^14.1.0"
 }
 ```
 
@@ -127,25 +127,25 @@ import { ViewStyle } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 type FlameIconProps = {
-  width?: number;
-  height?: number;
-  style?: ViewStyle;
+width?: number;
+height?: number;
+style?: ViewStyle;
 };
 
 const FlameIcon: React.FC<FlameIconProps> = ({
-  width = 25,
-  height = 30,
-  style,
+width = 25,
+height = 30,
+style,
 }) => {
-  return (
-    <Svg width={width} height={height} viewBox="0 0 25 30" style={style}>
-      <Path
-        d="M12.0238 29.2554C12.147 29.2698 12.2713 29.2698 12.3945 29.2554..."
-        fill="#FF5748"
-      />
-      {/* Add your SVG paths here */}
-    </Svg>
-  );
+return (
+ <Svg width={width} height={height} viewBox="0 0 25 30" style={style}>
+ <Path
+d="M12.0238 29.2554C12.147 29.2698 12.2713 29.2698 12.3945 29.2554..."
+fill="#FF5748"
+ />
+{/* Add your SVG paths here */}
+ </Svg>
+);
 };
 
 export default FlameIcon;
@@ -163,56 +163,56 @@ The complete implementation includes:
 
 1. **State Management**
 
-   - `markerCoordinate`: Current marker position `[longitude, latitude]`
-   - `zoomLevel`: Current map zoom level
-   - `mapRotation`: Current map heading/rotation
+ - `markerCoordinate`: Current marker position `[longitude, latitude]`
+ - `zoomLevel`: Current map zoom level
+ - `mapRotation`: Current map heading/rotation
 
 2. **Map Configuration**
 
-   - MapView with drag, zoom, and rotation enabled
-   - Camera component for programmatic map control
-   - PointAnnotation with `draggable={true}`
+ - MapView with drag, zoom, and rotation enabled
+ - Camera component for programmatic map control
+ - PointAnnotation with `draggable={true}`
 
 3. **Event Handlers**
 
-   - `handleDrag`: Updates coordinates while dragging
-   - `handleDragEnd`: Finalizes position when drag ends
-   - `handleMapPress`: Moves marker to tapped location
-   - `handleZoomIn/Out`: Programmatic zoom control
-   - `handleCompassReset`: Resets map rotation
+ - `handleDrag`: Updates coordinates while dragging
+ - `handleDragEnd`: Finalizes position when drag ends
+ - `handleMapPress`: Moves marker to tapped location
+ - `handleZoomIn/Out`: Programmatic zoom control
+ - `handleCompassReset`: Resets map rotation
 
 4. **UI Components**
-   - Info panel showing coordinates
-   - Zoom controls
-   - Compass reset button
-   - Loading and error states
+ - Info panel showing coordinates
+ - Zoom controls
+ - Compass reset button
+ - Loading and error states
 
 **Key Code Snippets:**
 
 ```tsx
 // Marker coordinate state
 const [markerCoordinate, setMarkerCoordinate] = useState<[number, number]>(
-  [90.364159, 23.823724] // Default: Dhaka, Bangladesh
+ [90.364159, 23.823724] // Default: Dhaka, Bangladesh
 );
 
 // Drag handler
 const handleDrag = useCallback(
-  (payload: DragFeature) => {
-    const coords = extractCoordinate(payload);
-    setMarkerCoordinate(coords);
-  },
-  [extractCoordinate]
+(payload: DragFeature) => {
+const coords = extractCoordinate(payload);
+setMarkerCoordinate(coords);
+},
+ [extractCoordinate]
 );
 
 // Map press handler (tap to place)
 const handleMapPress = useCallback(
-  (payload: Feature<Geometry>) => {
-    const coords = extractFromGeometry(payload);
-    if (coords) {
-      setMarkerCoordinate(coords);
-    }
-  },
-  [extractFromGeometry]
+(payload: Feature<Geometry>) => {
+const coords = extractFromGeometry(payload);
+if (coords) {
+setMarkerCoordinate(coords);
+}
+},
+ [extractFromGeometry]
 );
 ```
 
@@ -224,31 +224,31 @@ Create or use a utility hook to load map styles:
 
 ```tsx
 export const useBarikoiMapStyle = (apiKey?: string) => {
-  const [styleJson, setStyleJson] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+const [styleJson, setStyleJson] = useState<any>(null);
+const [loading, setLoading] = useState<boolean>(true);
+const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadStyle = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `https://map.barikoi.com/styles/osm_barikoi_v2/style.json?key=${apiKey}`
-        );
-        const data = await response.json();
-        setStyleJson(data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to load map style"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadStyle();
-  }, [apiKey]);
+useEffect(() => {
+const loadStyle = async () => {
+try {
+setLoading(true);
+const response = await fetch(
+`https://map.barikoi.com/styles/osm_barikoi_v2/style.json?key=${apiKey}`
+);
+const data = await response.json();
+setStyleJson(data);
+} catch (err) {
+setError(
+err instanceof Error ? err.message : "Failed to load map style"
+);
+} finally {
+setLoading(false);
+}
+};
+loadStyle();
+}, [apiKey]);
 
-  return { styleJson, loading, error };
+return { styleJson, loading, error };
 };
 ```
 
@@ -274,12 +274,12 @@ Add the route to your navigation configuration:
 
 ```tsx
 <Drawer.Screen
-  name="draggable-marker"
-  options={{
-    drawerLabel: "Drag & Drop Marker",
-    drawerIcon: () => <Text style={{ fontSize: 20 }}>🪄</Text>,
-    title: "Drag & Drop Marker",
-  }}
+name="draggable-marker"
+options={{
+drawerLabel: "Drag & Drop Marker",
+drawerIcon: () => <Text style={{ fontSize: 20 }}></Text>,
+title: "Drag & Drop Marker",
+}}
 />
 ```
 
@@ -298,7 +298,7 @@ Run your app:
 npx expo start
 
 # React Native CLI
-npm run android  # or npm run ios
+npm run android # or npm run ios
 ```
 
 Navigate to the draggable marker screen and test:
@@ -330,11 +330,11 @@ type DragFeature = Feature<Point>;
 
 // Payload structure:
 {
-    geometry: {
-        type: 'Point',
-        coordinates: [longitude, latitude]
-    },
-    properties: { ... }
+geometry: {
+type: 'Point',
+coordinates: [longitude, latitude]
+},
+properties: { ... }
 }
 ```
 
@@ -344,11 +344,11 @@ The `Camera` component allows programmatic map control:
 
 ```tsx
 <Camera
-  ref={cameraRef}
-  centerCoordinate={markerCoordinate}
-  zoomLevel={zoomLevel}
-  animationDuration={300}
-  animationMode="easeTo"
+ref={cameraRef}
+centerCoordinate={markerCoordinate}
+zoomLevel={zoomLevel}
+animationDuration={300}
+animationMode="easeTo"
 />
 ```
 
@@ -360,14 +360,14 @@ Key properties for draggable markers:
 
 ```tsx
 <PointAnnotation
-  id="draggable-marker"
-  coordinate={markerCoordinate}
-  draggable={true} // Enable dragging
-  anchor={{ x: 0.5, y: 1.0 }} // Anchor point (bottom center)
-  onDrag={handleDrag}
-  onDragEnd={handleDragEnd}
+id="draggable-marker"
+coordinate={markerCoordinate}
+draggable={true} // Enable dragging
+anchor={{ x: 0.5, y: 1.0 }} // Anchor point (bottom center)
+onDrag={handleDrag}
+onDragEnd={handleDragEnd}
 >
-  <FlameIcon width={30} height={30} />
+ <FlameIcon width={30} height={30} />
 </PointAnnotation>
 ```
 
@@ -387,7 +387,7 @@ Update the initial coordinate:
 
 ```tsx
 const [markerCoordinate, setMarkerCoordinate] = useState<[number, number]>(
-  [yourLongitude, yourLatitude] // Your default location
+ [yourLongitude, yourLatitude] // Your default location
 );
 ```
 
@@ -398,15 +398,15 @@ Replace the `FlameIcon` component with your own:
 ```tsx
 // Option 1: Use a different SVG component (Recommended)
 <PointAnnotation ...>
-    <CustomPinIcon width={40} height={40} />
+ <CustomPinIcon width={40} height={40} />
 </PointAnnotation>
 
 // Option 2: Use an image
 <PointAnnotation ...>
-    <Image
-        source={require('./assets/marker.png')}
-        style={{ width: 40, height: 40 }}
-    />
+ <Image
+source={require('./assets/marker.png')}
+style={{ width: 40, height: 40 }}
+ />
 </PointAnnotation>
 
 ```
@@ -434,8 +434,8 @@ const formatCoordinate = (value: number) => `${value.toFixed(4)}°`;
 
 // Alternative: DMS format (Degrees, Minutes, Seconds)
 const formatCoordinate = (value: number) => {
-  // Convert to DMS format
-  // ...
+ // Convert to DMS format
+ // ...
 };
 ```
 
@@ -446,24 +446,24 @@ const formatCoordinate = (value: number) => {
 
 ```tsx
 // Extract coordinate from drag payload
-    const extractCoordinate = useCallback((payload: DragFeature): [number, number] => {
-        return toLngLatTuple(payload.geometry.coordinates as number[], markerCoordinate);
-    }, [toLngLatTuple, markerCoordinate]);
+const extractCoordinate = useCallback((payload: DragFeature): [number, number] => {
+return toLngLatTuple(payload.geometry.coordinates as number[], markerCoordinate);
+}, [toLngLatTuple, markerCoordinate]);
 
 // Extract coordinate from geometry
-    const extractFromGeometry = useCallback((feature: Feature<Geometry>): [number, number] | null => {
-        if (!feature.geometry) return null;
+const extractFromGeometry = useCallback((feature: Feature<Geometry>): [number, number] | null => {
+if (!feature.geometry) return null;
 
-        if (feature.geometry.type === 'Point') {
-            return toLngLatTuple(feature.geometry.coordinates as number[], markerCoordinate);
-        }
+if (feature.geometry.type === 'Point') {
+return toLngLatTuple(feature.geometry.coordinates as number[], markerCoordinate);
+}
 
-        if (feature.geometry.type === 'MultiPoint' && feature.geometry.coordinates.length > 0) {
-            return toLngLatTuple(feature.geometry.coordinates[0] as number[], markerCoordinate);
-        }
+if (feature.geometry.type === 'MultiPoint' && feature.geometry.coordinates.length > 0) {
+return toLngLatTuple(feature.geometry.coordinates[0] as number[], markerCoordinate);
+}
 
-        return null;
-    }, [toLngLatTuple, markerCoordinate]);
+return null;
+}, [toLngLatTuple, markerCoordinate]);
 ```
 
 ### Modify Info Panel Style
@@ -472,14 +472,14 @@ Update the `infoPanel` style in the StyleSheet:
 
 ```tsx
 infoPanel: {
-    position: 'absolute',
-    bottom: 24,
-    left: 16,
-    right: 16,
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 16,
-    // Add your custom styles
+position: 'absolute',
+bottom: 24,
+left: 16,
+right: 16,
+backgroundColor: '#ffffff',
+borderRadius: 16,
+padding: 16,
+ // Add your custom styles
 },
 ```
 
@@ -491,25 +491,25 @@ To show addresses instead of coordinates:
 const [address, setAddress] = useState<string>("");
 
 const reverseGeocode = async (coords: [number, number]) => {
-  try {
-    const response = await fetch(
-      `https://barikoi.xyz/v2/api/search/reverse/geocode?api_key=${BARIKOI_API_KEY}&longitude=${coords[0]}&latitude=${coords[1]}&district=true&post_code=true&country=true&location_type=true&division=true&address=true&area=true&thana=true`
-    );
-    const data = await response.json();
-    setAddress(data.address || "Address not found");
-  } catch (error) {
-    console.error("Geocoding error:", error);
-  }
+try {
+const response = await fetch(
+`https://barikoi.xyz/v2/api/search/reverse/geocode?api_key=${BARIKOI_API_KEY}&longitude=${coords[0]}&latitude=${coords[1]}&district=true&post_code=true&country=true&location_type=true&division=true&address=true&area=true&thana=true`
+);
+const data = await response.json();
+setAddress(data.address || "Address not found");
+} catch (error) {
+console.error("Geocoding error:", error);
+}
 };
 
 // Call in handleDragEnd
 const handleDragEnd = useCallback(
-  (payload: DragFeature) => {
-    const coords = extractCoordinate(payload);
-    setMarkerCoordinate(coords);
-    reverseGeocode(coords); // Add this
-  },
-  [extractCoordinate]
+(payload: DragFeature) => {
+const coords = extractCoordinate(payload);
+setMarkerCoordinate(coords);
+reverseGeocode(coords); // Add this
+},
+ [extractCoordinate]
 );
 ```
 
@@ -523,11 +523,11 @@ const handleDragEnd = useCallback(
 
 **Solutions:**
 
-- ✅ Check your API key is valid
-- ✅ Verify network connectivity
-- ✅ Ensure map style URL is correct
-- ✅ Check console for error messages
-- ✅ Verify `@maplibre/maplibre-react-native` is properly installed
+- Check your API key is valid
+- Verify network connectivity
+- Ensure map style URL is correct
+- Check console for error messages
+- Verify `@maplibre/maplibre-react-native` is properly installed
 
 ### Marker Won't Drag
 
@@ -535,10 +535,10 @@ const handleDragEnd = useCallback(
 
 **Solutions:**
 
-- ✅ Ensure `draggable={true}` is set on `PointAnnotation`
-- ✅ Check that `onDrag` and `onDragEnd` handlers are provided
-- ✅ Verify you're using `PointAnnotation` (not `MarkerView`)
-- ✅ Test on a physical device (drag may not work in simulators)
+- Ensure `draggable={true}` is set on `PointAnnotation`
+- Check that `onDrag` and `onDragEnd` handlers are provided
+- Verify you're using `PointAnnotation` (not `MarkerView`)
+- Test on a physical device (drag may not work in simulators)
 
 ### Coordinates Are Inaccurate
 
@@ -546,9 +546,9 @@ const handleDragEnd = useCallback(
 
 **Solutions:**
 
-- ✅ Verify coordinate format: `[longitude, latitude]` (not reversed)
-- ✅ Check zoom level (higher zoom = more precision)
-- ✅ Ensure map style uses correct projection (usually Web Mercator)
+- Verify coordinate format: `[longitude, latitude]` (not reversed)
+- Check zoom level (higher zoom = more precision)
+- Ensure map style uses correct projection (usually Web Mercator)
 
 ### Performance Issues
 
@@ -556,10 +556,10 @@ const handleDragEnd = useCallback(
 
 **Solutions:**
 
-- ✅ Reduce animation duration
-- ✅ Debounce coordinate updates during drag
-- ✅ Optimize marker icon (use smaller images/SVGs)
-- ✅ Limit map style complexity
+- Reduce animation duration
+- Debounce coordinate updates during drag
+- Optimize marker icon (use smaller images/SVGs)
+- Limit map style complexity
 
 ### Build Errors
 
@@ -567,10 +567,10 @@ const handleDragEnd = useCallback(
 
 **Solutions:**
 
-- ✅ Run `pod install` in iOS directory
-- ✅ Clean build folders: `cd android && ./gradlew clean`
-- ✅ Clear Metro cache: `npx expo start --clear`
-- ✅ Verify React Native version compatibility
+- Run `pod install` in iOS directory
+- Clean build folders: `cd android && ./gradlew clean`
+- Clear Metro cache: `npx expo start --clear`
+- Verify React Native version compatibility
 
 ---
 
@@ -582,15 +582,15 @@ Always validate coordinates before using them:
 
 ```tsx
 const isValidCoordinate = (coords: [number, number]): boolean => {
-  const [lng, lat] = coords;
-  return (
-    typeof lng === "number" &&
-    typeof lat === "number" &&
-    lng >= -180 &&
-    lng <= 180 &&
-    lat >= -90 &&
-    lat <= 90
-  );
+const [lng, lat] = coords;
+return (
+typeof lng === "number" &&
+typeof lat === "number" &&
+lng >= -180 &&
+lng <= 180 &&
+lat >= -90 &&
+lat <= 90
+);
 };
 ```
 
@@ -602,11 +602,11 @@ For better performance, debounce coordinate updates during drag:
 import { debounce } from "lodash";
 
 const debouncedUpdate = useMemo(
-  () =>
-    debounce((coords: [number, number]) => {
-      // Update state or make API call
-    }, 300),
-  []
+() =>
+debounce((coords: [number, number]) => {
+ // Update state or make API call
+}, 300),
+ []
 );
 ```
 
@@ -623,7 +623,7 @@ await AsyncStorage.setItem("markerPosition", JSON.stringify(markerCoordinate));
 // Load
 const saved = await AsyncStorage.getItem("markerPosition");
 if (saved) {
-  setMarkerCoordinate(JSON.parse(saved));
+setMarkerCoordinate(JSON.parse(saved));
 }
 ```
 
@@ -633,17 +633,17 @@ Always handle errors gracefully:
 
 ```tsx
 const handleDragEnd = useCallback(
-  async (payload: DragFeature) => {
-    try {
-      const coords = extractCoordinate(payload);
-      setMarkerCoordinate(coords);
-      // Additional operations
-    } catch (error) {
-      console.error("Drag end error:", error);
-      // Show user-friendly error message
-    }
-  },
-  [extractCoordinate]
+async (payload: DragFeature) => {
+try {
+const coords = extractCoordinate(payload);
+setMarkerCoordinate(coords);
+ // Additional operations
+} catch (error) {
+console.error("Drag end error:", error);
+ // Show user-friendly error message
+}
+},
+ [extractCoordinate]
 );
 ```
 
@@ -653,12 +653,12 @@ Make controls accessible:
 
 ```tsx
 <Pressable
-  style={styles.controlButton}
-  onPress={handleZoomIn}
-  accessibilityLabel="Zoom in"
-  accessibilityHint="Increases map zoom level"
+style={styles.controlButton}
+onPress={handleZoomIn}
+accessibilityLabel="Zoom in"
+accessibilityHint="Increases map zoom level"
 >
-  <Ionicons name="add-outline" size={24} />
+ <Ionicons name="add-outline" size={24} />
 </Pressable>
 ```
 
@@ -717,4 +717,4 @@ If you encounter issues or have questions:
 
 ---
 
-**Happy Mapping! 🗺️**
+**Happy Mapping! **

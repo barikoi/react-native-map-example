@@ -32,6 +32,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `components/BarikoiLogo.tsx` — SVG logo overlay used on map screens
 - `app.json` — Expo config including `@maplibre/maplibre-react-native` plugin, new architecture enabled, and `extra.barikoiApiKey` field
 
+## Rules
+
+- Do not use emojis in code, comments, commit messages, or documentation
+
 ## Notes
 
 - Path alias `@/*` maps to project root (configured in tsconfig.json)

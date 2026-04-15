@@ -51,7 +51,7 @@ export default function RootLayout() {
             name="index"
             options={{
               drawerLabel: 'Simple Map',
-              drawerIcon: () => <Text style={{ fontSize: 20 }}>🗺️</Text>,
+              drawerIcon: () => <Text style={{ fontSize: 16 }}>(M)</Text>,
               title: 'Simple Map',
             }}
           />
@@ -59,7 +59,7 @@ export default function RootLayout() {
             name="current-location"
             options={{
               drawerLabel: 'Current Location',
-              drawerIcon: () => <Text style={{ fontSize: 20 }}>📍</Text>,
+              drawerIcon: () => <Text style={{ fontSize: 16 }}>(L)</Text>,
               title: 'Current Location',
             }}
           />
@@ -67,7 +67,7 @@ export default function RootLayout() {
             name="marker"
             options={{
               drawerLabel: 'Marker',
-              drawerIcon: () => <Text style={{ fontSize: 20 }}>📌</Text>,
+              drawerIcon: () => <Text style={{ fontSize: 16 }}>(P)</Text>,
               title: 'Marker',
             }}
           />
@@ -75,7 +75,7 @@ export default function RootLayout() {
             name="draggable-marker"
             options={{
               drawerLabel: 'Drag & Drop Marker',
-              drawerIcon: () => <Text style={{ fontSize: 20 }}>🪄</Text>,
+              drawerIcon: () => <Text style={{ fontSize: 16 }}>(D)</Text>,
               title: 'Drag & Drop Marker',
             }}
           />
@@ -83,7 +83,7 @@ export default function RootLayout() {
             name="line"
             options={{
               drawerLabel: 'Line',
-              drawerIcon: () => <Text style={{ fontSize: 20 }}>📏</Text>,
+              drawerIcon: () => <Text style={{ fontSize: 16 }}>(/)</Text>,
               title: 'Line',
             }}
           />
@@ -91,7 +91,7 @@ export default function RootLayout() {
             name="polygon"
             options={{
               drawerLabel: 'Polygon',
-              drawerIcon: () => <Text style={{ fontSize: 20 }}>⬡</Text>,
+              drawerIcon: () => <Text style={{ fontSize: 16 }}>(O)</Text>,
               title: 'Polygon',
             }}
           />
@@ -99,7 +99,7 @@ export default function RootLayout() {
             name="geometry"
             options={{
               drawerLabel: 'Geometry',
-              drawerIcon: () => <Text style={{ fontSize: 20 }}>🔷</Text>,
+              drawerIcon: () => <Text style={{ fontSize: 16 }}>(G)</Text>,
               title: 'Geometry',
             }}
           />
@@ -107,7 +107,7 @@ export default function RootLayout() {
             name="advanced-map"
             options={{
               drawerLabel: 'Advanced Map',
-              drawerIcon: () => <Text style={{ fontSize: 20 }}>🗺️</Text>,
+              drawerIcon: () => <Text style={{ fontSize: 16 }}>(A)</Text>,
               title: 'Advanced Map',
             }}
           />
