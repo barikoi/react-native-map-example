@@ -4,21 +4,21 @@ A comprehensive React Native (Expo) application demonstrating various map featur
 
 ## IMPORTANT: Get Your API Key First!
 
- **Before running this project, you MUST:**
+**Before running this project, you MUST:**
 
 1. Visit [https://developer.barikoi.com](https://developer.barikoi.com) and create an **account**
 2. Get your API key from the dashboard -> account -> API Key
 3. Replace `YOUR_API_KEY_HERE` in `utils/mapUtils.ts`
 
- **The app will NOT work without a valid API key!**
+**The app will NOT work without a valid API key!**
 
 ## Version Info
 
-- **Project Version**: 1.0.0
-- **React Native**: 0.72.6
-- **Expo**: ~49.0.15
-- **@maplibre/maplibre-react-native**: ^9.1.0
-- **expo-location**: ~16.1.0
+- **React Native**: 0.79.4
+- **Expo SDK**: 53.0.12
+- **@maplibre/maplibre-react-native**: 10.1.6
+- **expo-location**: 18.1.5
+- **Node.js**: 24.14.1
 
 ## Documentation
 
@@ -92,7 +92,7 @@ const BARIKOI_API_KEY = "bkoi_xxxxxxxxxxxxx"; // Your actual key here
 # Option 1: Start development server with Expo
 npm start # Launches Metro bundler - scan the QR code with Expo Go app to run
 
-# Option 2: Run on Android emulator (Recommanded)
+# Option 2: Run on Android emulator (Recommended)
 npm run android # Starts app on connected Android emulator (requires Android Studio)
 
 # Option 3: Run on iOS simulator (macOS only)
@@ -101,7 +101,7 @@ npm run ios # Starts app on iOS simulator (requires Xcode)
 
 ## Development Environment Setup
 
-> ** Important**: This project uses `@maplibre/maplibre-react-native` which requires specific Expo configuration. Make sure to follow the [MapLibre Expo Setup Guide](https://maplibre.org/maplibre-react-native/docs/setup/expo) to verify your configuration is correct.
+> **Important**: This project uses `@maplibre/maplibre-react-native` which requires specific Expo configuration. Make sure to follow the [MapLibre Expo Setup Guide](https://maplibre.org/maplibre-react-native/docs/setup/expo) to verify your configuration is correct.
 
 #### For Android
 
